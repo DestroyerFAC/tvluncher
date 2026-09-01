@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <ImageView
+        android:id="@+id/dreamWallpaper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:importantForAccessibility="no" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#59000000" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="72dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/dreamClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="76sp"
+            android:includeFontPadding="false"
+            android:shadowColor="#B3000000"
+            android:shadowRadius="18"
+            android:shadowDx="0"
+            android:shadowDy="3" />
+
+        <TextView
+            android:id="@+id/dreamDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="21sp"
+            android:shadowColor="#B3000000"
+            android:shadowRadius="14"
+            android:shadowDx="0"
+            android:shadowDy="2" />
+    </LinearLayout>
+</FrameLayout>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rolling hills at golden hour. Vector rather than a photo: a 1920x1080 JPEG
+     costs ~8 MB of heap once decoded, this costs nothing and stays sharp at 4K. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="1920dp"
+    android:height="1080dp"
+    android:viewportWidth="1920"
+    android:viewportHeight="1080">
+
+    <path android:pathData="M0,0h1920v1080h-1920z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="960" android:startY="0"
+                android:endX="960" android:endY="1080"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FFBFD9E8" />
+                <item android:offset="0.28" android:color="#FFE7E9D2" />
+                <item android:offset="0.5" android:color="#FFF3E4B4" />
+                <item android:offset="1.0" android:color="#FFD9DBA0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Sun, low and soft. -->
+    <path
+        android:pathData="M830,300a130,130 0 1,1 260,0a130,130 0 1,1 -260,0z"
+        android:fillAlpha="0.85">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="960" android:centerY="300"
+                android:gradientRadius="130">
+                <item android:offset="0.0" android:color="#FFFFFBEF" />
+                <item android:offset="1.0" android:color="#FFF7E9C4" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <path
+        android:pathData="M0,560C240,500 420,600 660,570C900,540 1100,470 1350,520C1560,562 1750,540 1920,505L1920,1080L0,1080Z"
+        android:fillColor="#FFB9CFA4" />
+    <path
+        android:pathData="M0,680C260,610 470,700 720,672C980,643 1180,590 1430,640C1640,682 1800,660 1920,640L1920,1080L0,1080Z"
+        android:fillColor="#FF97BE8D" />
+    <path
+        android:pathData="M0,800C300,730 520,820 800,795C1080,770 1300,715 1560,762L1920,742L1920,1080L0,1080Z"
+        android:fillColor="#FF6FA47B" />
+    <path
+        android:pathData="M0,930C280,880 560,950 860,930C1160,910 1450,860 1920,900L1920,1080L0,1080Z"
+        android:fillColor="#FF4A8065" />
+
+    <!-- Conifers on the near ridge. -->
+    <path
+        android:pathData="M150,930L192,800L234,930ZM236,940L272,832L308,940ZM60,946L100,824L140,946ZM300,952L332,864L364,952Z"
+        android:fillColor="#FF2E5C4C" />
+</vector>

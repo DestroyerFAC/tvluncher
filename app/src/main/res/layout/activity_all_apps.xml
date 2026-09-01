@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:clipChildren="false">
+
+    <ImageView
+        android:id="@+id/wallpaper"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:importantForAccessibility="no"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- The grid needs contrast the wallpaper cannot guarantee. -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#D9000000"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/all_apps_title"
+        style="@style/TextAppearance.Title"
+        android:layout_marginStart="@dimen/screen_margin_horizontal"
+        android:layout_marginTop="@dimen/screen_margin_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_tertiary"
+        android:textSize="@dimen/text_body"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toEndOf="@id/title"
+        app:layout_constraintBaseline_toBaselineOf="@id/title" />
+
+    <Button
+        android:id="@+id/btnToggleHidden"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:text="@string/all_apps_show_hidden"
+        android:textColor="@color/text_primary"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        android:background="@drawable/bg_list_item"
+        android:paddingStart="18dp"
+        android:paddingEnd="18dp"
+        android:focusable="true"
+        android:layout_marginEnd="@dimen/screen_margin_horizontal"
+        app:layout_constraintTop_toTopOf="@id/title"
+        app:layout_constraintBottom_toBottomOf="@id/title"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/grid"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/screen_margin_horizontal"
+        android:paddingEnd="@dimen/screen_margin_horizontal"
+        android:paddingTop="20dp"
+        android:paddingBottom="40dp"
+        android:layout_marginTop="18dp"
+        android:descendantFocusability="afterDescendants"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/emptyLabel"
+        android:text="@string/all_apps_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/text_body"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/grid"
+        app:layout_constraintBottom_toBottomOf="@id/grid"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The cheapest wallpaper to draw and the kindest to an OLED panel. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="1920dp"
+    android:height="1080dp"
+    android:viewportWidth="1920"
+    android:viewportHeight="1080">
+
+    <path android:pathData="M0,0h1920v1080h-1920z" android:fillColor="#FF000000" />
+    <path android:pathData="M0,0h1920v1080h-1920z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="960" android:centerY="420"
+                android:gradientRadius="1100">
+                <item android:offset="0.0" android:color="#FF141A24" />
+                <item android:offset="1.0" android:color="#FF000000" />
+            </gradient>
+        </aapt:attr>
+    </path>
+</vector>

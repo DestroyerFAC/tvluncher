@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Optional: only used by the weather chip (Open-Meteo, no account, no tracker).
+         Remove this line if you want a launcher with zero network access. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Lets the "uninstall" action in the tile menu skip the confirmation screen chain. -->
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+
+    <!-- Package visibility (API 30+): resolve every launchable entry point without
+         asking for QUERY_ALL_PACKAGES. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+
+    <application
+        android:name=".LauncherApp"
+        android:allowBackup="true"
+        android:banner="@drawable/app_banner"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:hardwareAccelerated="true"
+        android:largeHeap="false"
+        android:theme="@style/Theme.TvLuncher">
+
+        <activity
+            android:name=".ui.HomeActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:alwaysRetainTaskState="true"
+            android:stateNotNeeded="true"
+            android:excludeFromRecents="true"
+            android:clearTaskOnLaunch="true"
+            android:resizeableActivity="false"
+            android:screenOrientation="landscape"
+            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout|smallestScreenSize|uiMode|density|fontScale|locale|layoutDirection"
+            android:theme="@style/Theme.TvLuncher.Home">
+
+            <!-- Home / launcher role -->
+            <intent-filter android:priority="1">
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <!-- Also reachable from the stock launcher, which makes first-run setup
+                 possible before the home role has been handed over. -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.AllAppsActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout|smallestScreenSize|uiMode|density|fontScale|locale|layoutDirection"
+            android:theme="@style/Theme.TvLuncher.Overlay" />
+
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout|smallestScreenSize|uiMode|density|fontScale|locale|layoutDirection"
+            android:theme="@style/Theme.TvLuncher.Overlay" />
+
+        <!-- Apple-TV-style ambient screensaver. -->
+        <service
+            android:name=".dream.AmbientDreamService"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_DREAM_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.dreams.DreamService" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.dream"
+                android:resource="@xml/dream_info" />
+        </service>
+
+        <receiver
+            android:name=".data.PackageChangeReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.PACKAGE_CHANGED" />
+                <action android:name="android.intent.action.PACKAGE_FULLY_REMOVED" />
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

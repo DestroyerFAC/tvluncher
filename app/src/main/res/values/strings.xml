@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TV Luncher</string>
+
+    <!-- Home -->
+    <string name="all_apps">Applications</string>
+    <string name="settings">Réglages</string>
+    <string name="home_empty_title">Aucun favori</string>
+    <string name="home_empty_body">Ouvrez « Applications » et appuyez longuement sur une app pour l\'ajouter à l\'accueil.</string>
+
+    <!-- Tile menu -->
+    <string name="action_open">Ouvrir</string>
+    <string name="action_add_favourite">Ajouter à l\'accueil</string>
+    <string name="action_remove_favourite">Retirer de l\'accueil</string>
+    <string name="action_move_left">Déplacer vers la gauche</string>
+    <string name="action_move_right">Déplacer vers la droite</string>
+    <string name="action_hide">Masquer de la liste</string>
+    <string name="action_unhide">Réafficher dans la liste</string>
+    <string name="action_app_info">Informations sur l\'app</string>
+    <string name="action_uninstall">Désinstaller</string>
+
+    <!-- All apps -->
+    <string name="all_apps_title">Applications</string>
+    <string name="all_apps_count">%1$d applications</string>
+    <string name="all_apps_hide_hidden">Masquer les apps cachées</string>
+    <string name="all_apps_show_hidden">Afficher les apps masquées</string>
+    <string name="all_apps_empty">Aucune application</string>
+    <string name="all_apps_hidden_badge">Masquée</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Réglages</string>
+    <string name="settings_section_appearance">Apparence</string>
+    <string name="settings_section_home">Accueil</string>
+    <string name="settings_section_system">Système</string>
+    <string name="settings_section_about">À propos</string>
+
+    <string name="settings_wallpaper">Fond d\'écran</string>
+    <string name="settings_wallpaper_custom">Choisir une image…</string>
+    <string name="settings_wallpaper_custom_failed">Impossible de charger cette image.</string>
+    <string name="settings_wallpaper_no_picker">Aucun sélecteur de fichiers sur cet appareil. Copiez une image puis réessayez, ou gardez un fond intégré.</string>
+    <string name="settings_show_pill">Afficher l\'heure et la météo</string>
+    <string name="settings_show_labels">Afficher le nom des applications</string>
+    <string name="settings_clock_24h">Horloge 24 h</string>
+    <string name="settings_animations">Animations de focus</string>
+    <string name="settings_animations_summary">Désactivez-les si la navigation saccade.</string>
+
+    <string name="settings_weather">Météo</string>
+    <string name="settings_weather_summary">Une seule requête vers open-meteo.com, toutes les 30 minutes. Aucun compte, aucun traceur.</string>
+    <string name="settings_weather_city">Ville</string>
+    <string name="settings_weather_city_none">Aucune ville choisie</string>
+    <string name="settings_weather_search_hint">Nom de la ville</string>
+    <string name="settings_weather_no_result">Aucun résultat</string>
+
+    <string name="settings_manage_favourites">Gérer les favoris</string>
+    <string name="settings_manage_favourites_summary">%1$d application(s) sur l\'accueil</string>
+    <string name="settings_hidden_apps">Applications masquées</string>
+    <string name="settings_hidden_apps_summary">%1$d masquée(s)</string>
+
+    <string name="settings_default_launcher">Définir comme écran d\'accueil</string>
+    <string name="settings_default_launcher_summary">Ouvre le réglage Android correspondant.</string>
+    <string name="settings_default_launcher_active">TV Luncher est déjà l\'écran d\'accueil.</string>
+    <string name="settings_system_settings">Réglages Android</string>
+    <string name="settings_screensaver">Écran de veille</string>
+    <string name="settings_screensaver_summary">Choisir « TV Luncher » dans les réglages de veille.</string>
+
+    <string name="settings_about_version">Version %1$s</string>
+    <string name="settings_about_privacy">Aucune publicité, aucune analyse, aucun suivi.</string>
+
+    <!-- Wallpapers -->
+    <string name="wallpaper_valley">Vallée</string>
+    <string name="wallpaper_dusk">Crépuscule</string>
+    <string name="wallpaper_aurora">Aurore</string>
+    <string name="wallpaper_midnight">Minuit</string>
+    <string name="wallpaper_slate">Ardoise</string>
+    <string name="wallpaper_custom_label">Image personnelle</string>
+
+    <!-- Errors -->
+    <string name="error_app_unavailable">Application indisponible.</string>
+    <string name="error_no_settings">Réglages introuvables sur cet appareil.</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_app_icon">Icône de %1$s</string>
+    <string name="temperature_format">%1$d°</string>
+    <string name="cd_weather">Météo</string>
+    <string name="on">Activé</string>
+    <string name="off">Désactivé</string>
+    <string name="close">Fermer</string>
+</resources>

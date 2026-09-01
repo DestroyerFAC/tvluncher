@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="560dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_sheet"
+    android:paddingStart="14dp"
+    android:paddingEnd="14dp"
+    android:paddingTop="22dp"
+    android:paddingBottom="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:text="@string/settings_weather_city"
+        android:textColor="@color/text_primary"
+        android:textSize="19sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/query"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/bg_list_item"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:hint="@string/settings_weather_search_hint"
+        android:textColor="@color/text_primary"
+        android:textColorHint="@color/text_tertiary"
+        android:textSize="16sp"
+        android:inputType="text"
+        android:imeOptions="actionSearch"
+        android:singleLine="true"
+        android:importantForAutofill="no" />
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:maxHeight="320dp"
+        android:scrollbars="none"
+        android:descendantFocusability="afterDescendants">
+
+        <LinearLayout
+            android:id="@+id/results"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+</LinearLayout>

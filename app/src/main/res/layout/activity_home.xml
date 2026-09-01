@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- clipChildren="false" all the way down: the focused tile scales past its own
+     bounds and its shadow past that, and either would be sliced off otherwise. -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:clipChildren="false">
+
+    <ImageView
+        android:id="@+id/wallpaper"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:importantForAccessibility="no"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <View
+        android:id="@+id/scrim"
+        android:layout_width="0dp"
+        android:layout_height="360dp"
+        android:background="@drawable/scrim_bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/statusPill"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/pill_height"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/bg_pill"
+        android:paddingStart="20dp"
+        android:paddingEnd="6dp"
+        android:layout_marginTop="@dimen/screen_margin_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_clock"
+            android:textStyle="bold"
+            android:includeFontPadding="false" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_pill"
+            android:includeFontPadding="false" />
+
+        <ImageView
+            android:id="@+id/weatherIcon"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="14dp"
+            android:contentDescription="@string/cd_weather"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/weatherTemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_pill"
+            android:includeFontPadding="false"
+            android:visibility="gone" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:background="@color/surface_stroke" />
+
+        <ImageButton
+            android:id="@+id/btnAllApps"
+            android:layout_width="@dimen/pill_button"
+            android:layout_height="@dimen/pill_button"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_circle_button"
+            android:src="@drawable/ic_apps"
+            android:scaleType="centerInside"
+            android:padding="11dp"
+            android:contentDescription="@string/all_apps"
+            android:focusable="true" />
+
+        <ImageButton
+            android:id="@+id/btnSettings"
+            android:layout_width="@dimen/pill_button"
+            android:layout_height="@dimen/pill_button"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/bg_circle_button"
+            android:src="@drawable/ic_settings"
+            android:scaleType="centerInside"
+            android:padding="11dp"
+            android:contentDescription="@string/settings"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/rowContainer"
+        android:layout_width="0dp"
+        android:layout_height="196dp"
+        android:background="@drawable/bg_row_glass"
+        android:clipChildren="false"
+        android:layout_marginStart="@dimen/screen_margin_horizontal"
+        android:layout_marginEnd="@dimen/screen_margin_horizontal"
+        android:layout_marginBottom="52dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/favouritesRow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:paddingStart="26dp"
+            android:paddingEnd="26dp"
+            android:paddingTop="@dimen/row_vertical_padding"
+            android:paddingBottom="@dimen/row_vertical_padding"
+            android:focusable="false"
+            android:descendantFocusability="afterDescendants"
+            android:scrollbars="none" />
+
+        <LinearLayout
+            android:id="@+id/emptyState"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/home_empty_title"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/home_empty_body"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_body"
+                android:gravity="center" />
+        </LinearLayout>
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Surfaces are deliberately translucent: the wallpaper is the only real
+         colour on screen, everything else floats above it. -->
+    <color name="surface_glass">#4D0B0F14</color>
+    <color name="surface_glass_strong">#B3070A0E</color>
+    <color name="surface_stroke">#2EFFFFFF</color>
+    <color name="surface_sheet">#F2111419</color>
+
+    <color name="text_primary">#FFFFFFFF</color>
+    <color name="text_secondary">#B8FFFFFF</color>
+    <color name="text_tertiary">#8AFFFFFF</color>
+    <color name="text_on_light">#FF10151C</color>
+
+    <color name="focus_ring">#FFFFFFFF</color>
+    <color name="tile_placeholder">#FF2A3039</color>
+    <color name="scrim">#99000000</color>
+    <color name="accent">#FF4C8DFF</color>
+</resources>

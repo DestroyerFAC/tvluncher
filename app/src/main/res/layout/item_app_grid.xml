@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tileRoot"
+    android:layout_width="@dimen/grid_tile_width"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:focusable="true"
+    android:clickable="true"
+    android:clipChildren="false">
+
+    <FrameLayout
+        android:id="@+id/tile"
+        android:layout_width="@dimen/grid_tile_width"
+        android:layout_height="@dimen/grid_tile_height"
+        android:background="@drawable/bg_tile"
+        android:foreground="@drawable/bg_tile_focus"
+        android:duplicateParentState="true">
+
+        <ImageView
+            android:id="@+id/artwork"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+        <ImageView
+            android:id="@+id/favouriteBadge"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="top|end"
+            android:layout_margin="6dp"
+            android:src="@drawable/ic_star"
+            android:alpha="0.9"
+            android:visibility="gone"
+            android:importantForAccessibility="no" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/row_label_height"
+        android:layout_marginTop="6dp"
+        style="@style/TextAppearance.Tile" />
+</LinearLayout>

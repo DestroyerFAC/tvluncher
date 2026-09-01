@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Leanback banner (16:9). Shown by the stock launcher before the home role is
+     handed over, and by the system in "default home app" pickers. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="320dp"
+    android:height="180dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+
+    <path android:pathData="M0,0h320v180h-320z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="0" android:startY="0"
+                android:endX="320" android:endY="180"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FF14213A" />
+                <item android:offset="1.0" android:color="#FF0A0E16" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- A screen with a play mark: the launcher, in one glyph. -->
+    <path
+        android:pathData="M112,58h96a14,14 0 0,1 14,14v46a14,14 0 0,1 -14,14h-96a14,14 0 0,1 -14,-14v-46a14,14 0 0,1 14,-14z"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="7"
+        android:fillColor="#00000000" />
+    <path
+        android:pathData="M150,79L182,95L150,111Z"
+        android:fillColor="#FFFFFFFF" />
+    <path
+        android:pathData="M134,146h52v7h-52z"
+        android:fillColor="#66FFFFFF" />
+</vector>
