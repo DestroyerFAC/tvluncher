@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -44,3 +44,18 @@ jobs:
             app/build/outputs/apk/debug/*.apk
             app/build/outputs/apk/release/*.apk
           if-no-files-found: error
+
+      # A fixed, public URL lets the box fetch the APK itself (e.g. with the
+      # Downloader app), so no computer and no ADB client are needed. The tag
+      # is recreated on each push so the URL always serves the latest build.
+      - name: Publish rolling "apk" release
+        if: github.event_name != 'pull_request' && github.ref_name == github.event.repository.default_branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp app/build/outputs/apk/release/app-release.apk tvluncher.apk
+          gh release delete apk --yes --cleanup-tag || true
+          gh release create apk tvluncher.apk \
+            --target "$GITHUB_SHA" \
+            --title "TV Luncher (dernière version)" \
+            --notes "APK construit automatiquement depuis ${GITHUB_SHA::7}. Lien direct : https://github.com/${GITHUB_REPOSITORY}/releases/download/apk/tvluncher.apk"
