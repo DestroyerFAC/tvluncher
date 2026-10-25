@@ -21,9 +21,9 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
+      # GitHub-hosted Ubuntu images ship the Android SDK (ANDROID_HOME) and AGP
+      # fetches any missing platform itself. android-actions/setup-android@v3
+      # now fails there trying to install the removed "tools" package.
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
