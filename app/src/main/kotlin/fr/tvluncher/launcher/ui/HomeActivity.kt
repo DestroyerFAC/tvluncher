@@ -21,6 +21,7 @@ import fr.tvluncher.launcher.data.AppInfo
 import fr.tvluncher.launcher.data.AppRepository
 import fr.tvluncher.launcher.data.Artworks
 import fr.tvluncher.launcher.data.DisplayedArtwork
+import fr.tvluncher.launcher.data.ImageSource
 import fr.tvluncher.launcher.data.Prefs
 import fr.tvluncher.launcher.data.Wallpapers
 import fr.tvluncher.launcher.databinding.ActivityHomeBinding
@@ -53,7 +54,7 @@ class HomeActivity : AppCompatActivity() {
     private var statusPill: StatusPill? = null
     private lateinit var volume: Volume
 
-    /** imageId of the painting on screen, so a refresh never re-decodes the same file. */
+    /** Key of the image on screen, so a refresh never re-decodes the same file. */
     private var shownArtworkId: String? = null
     private var wallpaperJob: Job? = null
 
@@ -155,7 +156,7 @@ class HomeActivity : AppCompatActivity() {
 
     private fun setUpQuickPanel() {
         binding.pillStyle.setUp(R.drawable.ic_palette, R.string.pill_style) {
-            prefs.galleryStyle = !prefs.galleryStyle
+            cycleBackground()
             loadWallpaper()
             // Classic collapses the panel, taking this pill with it.
             if (!prefs.galleryStyle) focusFirstTile()
@@ -201,6 +202,22 @@ class HomeActivity : AppCompatActivity() {
         binding.deviceName.text = deviceName()
     }
 
+    /** Paintings → Nature → Space → Mix → Classic → Paintings. */
+    private fun cycleBackground() {
+        if (!prefs.galleryStyle) {
+            prefs.imageSource = ImageSource.PAINTINGS.key
+            prefs.galleryStyle = true
+            return
+        }
+        val sources = ImageSource.entries
+        val next = sources.indexOf(ImageSource.of(prefs.imageSource)) + 1
+        if (next >= sources.size) {
+            prefs.galleryStyle = false
+        } else {
+            prefs.imageSource = sources[next].key
+        }
+    }
+
     private fun ViewQuickPillBinding.setUp(
         @DrawableRes icon: Int,
         @StringRes title: Int,
@@ -214,7 +231,8 @@ class HomeActivity : AppCompatActivity() {
 
     private fun renderQuickPanel() {
         binding.pillStyle.value.setText(
-            if (prefs.galleryStyle) R.string.pill_style_gallery else R.string.pill_style_classic
+            if (prefs.galleryStyle) ImageSource.of(prefs.imageSource).labelRes
+            else R.string.pill_style_classic
         )
         binding.pillClock.value.setText(
             if (prefs.use24hClock) R.string.pill_clock_24 else R.string.pill_clock_12
@@ -386,7 +404,7 @@ class HomeActivity : AppCompatActivity() {
             }
 
             val fresh = if (next) Artworks.next(this@HomeActivity) else Artworks.today(this@HomeActivity)
-            if (fresh != null && fresh.artwork.imageId != shownArtworkId) {
+            if (fresh != null && fresh.artwork.key != shownArtworkId) {
                 showArtwork(fresh, width, height)
             }
         }
@@ -397,7 +415,7 @@ class HomeActivity : AppCompatActivity() {
             Wallpapers.decodeSampled(displayed.file.absolutePath, width, height)
         } ?: return false
         binding.wallpaper.setImageDrawable(BitmapDrawable(resources, bitmap))
-        shownArtworkId = displayed.artwork.imageId
+        shownArtworkId = displayed.artwork.key
         binding.artTitle.text = displayed.artwork.title
         binding.artArtist.text = displayed.artwork.credit
         binding.artArtist.visibility = if (displayed.artwork.credit.isBlank()) View.GONE else View.VISIBLE

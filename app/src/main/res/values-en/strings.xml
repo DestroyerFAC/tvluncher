@@ -86,9 +86,12 @@
     <string name="home_hide_ui">Show only the artwork</string>
     <string name="home_hidden_hint">Press any key to come back</string>
     <string name="home_volume">Volume</string>
-    <string name="pill_style">Style</string>
-    <string name="pill_style_gallery">Gallery</string>
+    <string name="pill_style">Background</string>
     <string name="pill_style_classic">Classic</string>
+    <string name="source_paintings">Paintings</string>
+    <string name="source_nature">Nature</string>
+    <string name="source_space">Space</string>
+    <string name="source_mix">Mix</string>
     <string name="pill_clock">Clock</string>
     <string name="pill_clock_24">24-hour</string>
     <string name="pill_clock_12">12-hour</string>
@@ -96,8 +99,8 @@
     <string name="pill_labels">App names</string>
     <string name="pill_labels_shown">Shown</string>
     <string name="pill_labels_hidden">Hidden</string>
-    <string name="settings_gallery">Gallery style</string>
-    <string name="settings_gallery_summary">A public-domain painting every day (Art Institute of Chicago). Off: the wallpaper below.</string>
+    <string name="settings_background">Home background</string>
+    <string name="settings_background_summary">One freely licensed image a day: paintings (Art Institute of Chicago), nature or space photos (Wikimedia Commons). Classic: the wallpaper below.</string>
     <string name="weather_line">%1$d° %2$s</string>
     <string name="weather_clear">Clear</string>
     <string name="weather_partly">Partly cloudy</string>

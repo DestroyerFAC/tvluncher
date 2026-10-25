@@ -21,6 +21,7 @@ import fr.tvluncher.launcher.BuildConfig
 import fr.tvluncher.launcher.R
 import fr.tvluncher.launcher.data.AppRepository
 import fr.tvluncher.launcher.data.GeoResult
+import fr.tvluncher.launcher.data.ImageSource
 import fr.tvluncher.launcher.data.Prefs
 import fr.tvluncher.launcher.data.Wallpapers
 import fr.tvluncher.launcher.data.WeatherRepository
@@ -96,11 +97,12 @@ class SettingsActivity : AppCompatActivity() {
         val rows = buildList {
             add(SettingRow.Header(getString(R.string.settings_section_appearance)))
             add(
-                SettingRow.Toggle(
-                    title = getString(R.string.settings_gallery),
-                    summary = getString(R.string.settings_gallery_summary),
-                    checked = prefs.galleryStyle,
-                ) { prefs.galleryStyle = it; rebuild() }
+                SettingRow.Action(
+                    title = getString(R.string.settings_background),
+                    summary = getString(R.string.settings_background_summary),
+                    value = currentBackgroundLabel(),
+                    onClick = ::showBackgroundPicker,
+                )
             )
             add(
                 SettingRow.Action(
@@ -208,6 +210,30 @@ class SettingsActivity : AppCompatActivity() {
             )
         }
         adapter.submit(rows)
+    }
+
+    private fun currentBackgroundLabel(): String =
+        if (prefs.galleryStyle) getString(ImageSource.of(prefs.imageSource).labelRes)
+        else getString(R.string.pill_style_classic)
+
+    private fun showBackgroundPicker() {
+        val items = ImageSource.entries.map { source ->
+            Sheet.Item(
+                label = getString(source.labelRes),
+                checked = prefs.galleryStyle && ImageSource.of(prefs.imageSource) == source,
+            ) {
+                prefs.imageSource = source.key
+                prefs.galleryStyle = true
+                rebuild()
+            }
+        } + Sheet.Item(
+            label = getString(R.string.pill_style_classic),
+            checked = !prefs.galleryStyle,
+        ) {
+            prefs.galleryStyle = false
+            rebuild()
+        }
+        Sheet.show(this, getString(R.string.settings_background), items = items)
     }
 
     private fun currentWallpaperLabel(): String =

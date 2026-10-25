@@ -93,9 +93,12 @@
     <string name="home_hide_ui">Afficher seulement l\'œuvre</string>
     <string name="home_hidden_hint">Appuyez sur une touche pour revenir</string>
     <string name="home_volume">Volume</string>
-    <string name="pill_style">Style</string>
-    <string name="pill_style_gallery">Galerie</string>
+    <string name="pill_style">Fond</string>
     <string name="pill_style_classic">Classique</string>
+    <string name="source_paintings">Tableaux</string>
+    <string name="source_nature">Nature</string>
+    <string name="source_space">Espace</string>
+    <string name="source_mix">Mélange</string>
     <string name="pill_clock">Horloge</string>
     <string name="pill_clock_24">24 heures</string>
     <string name="pill_clock_12">12 heures</string>
@@ -103,8 +106,8 @@
     <string name="pill_labels">Noms des apps</string>
     <string name="pill_labels_shown">Affichés</string>
     <string name="pill_labels_hidden">Masqués</string>
-    <string name="settings_gallery">Style Galerie</string>
-    <string name="settings_gallery_summary">Un tableau du domaine public chaque jour (Art Institute of Chicago). Désactivé : le fond d\'écran ci-dessous.</string>
+    <string name="settings_background">Fond d\'accueil</string>
+    <string name="settings_background_summary">Une image libre de droits par jour : tableaux (Art Institute of Chicago), photos de nature ou d\'espace (Wikimedia Commons). Classique : le fond d\'écran ci-dessous.</string>
     <string name="weather_line">%1$d° %2$s</string>
     <string name="weather_clear">Dégagé</string>
     <string name="weather_partly">Éclaircies</string>

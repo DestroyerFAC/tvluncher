@@ -8,10 +8,11 @@ Aucune publicité, aucun bandeau sponsorisé, aucune analyse, aucun traceur.
 
 ## Ce que ça fait
 
-- **Style Galerie** (par défaut) : un tableau de maître du domaine public en plein
-  écran, renouvelé chaque jour, avec son cartel (peintre, date, titre). Grande
+- **Style Galerie** (par défaut) : une image libre de droits en plein écran,
+  renouvelée chaque jour, avec son cartel (auteur, licence, titre) : tableaux du
+  domaine public, photos de nature ou d'espace, ou un mélange des trois. Grande
   horloge, date et météo en haut à gauche ; panneau rapide en haut à droite
-  (style, horloge, météo, noms des apps, œuvre suivante, écran de veille,
+  (fond, horloge, météo, noms des apps, œuvre suivante, écran de veille,
   actualiser, « œuvre seule », volume). Le style **Classique** garde un fond
   d'écran fixe.
 - **Une rangée de favoris** en plein écran, tuiles 16:9 qui utilisent la bannière
@@ -106,10 +107,12 @@ l'écran reste noir et la télécommande ne répond plus. D'où :
 | Publicités | aucune |
 | Analyse / télémétrie | aucune |
 | Permissions | `INTERNET` (tableau du jour et météo), `ACCESS_NETWORK_STATE`, `REQUEST_DELETE_PACKAGES`, `RECEIVE_BOOT_COMPLETED` |
-| Requêtes réseau | `api.artic.edu` / `www.artic.edu` (catalogue une fois par semaine, une image par jour) **en style Galerie** ; `open-meteo.com` toutes les 30 min **si la météo est activée** |
+| Requêtes réseau | `artic.edu` et `wikimedia.org` (un catalogue par source et par semaine, une image par jour) **en style Galerie** ; `open-meteo.com` toutes les 30 min **si la météo est activée** |
 
 Les tableaux viennent de l'Art Institute of Chicago (collection ouverte, licence
-CC0) : aucune clé, aucun compte, rien sur le spectateur n'est transmis. Ils sont
+CC0), les photos des « images de qualité » de Wikimedia Commons (licences libres,
+auteur et licence affichés à l'écran) : aucune clé, aucun compte, rien sur le
+spectateur n'est transmis. Ils sont
 mis en cache, donc le dernier tableau reste affiché sans connexion. En style
 Classique sans météo, l'application ne contacte aucun serveur.
 

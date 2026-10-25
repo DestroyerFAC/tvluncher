@@ -95,10 +95,15 @@ class Prefs private constructor(context: Context) {
 
     // --- Gallery ----------------------------------------------------------
 
-    /** Painting of the day plus the quick panel. Off is the plain wallpaper home. */
+    /** Image of the day plus the quick panel. Off is the plain wallpaper home. */
     var galleryStyle: Boolean
         get() = sp.getBoolean(KEY_GALLERY, true)
         set(value) = sp.edit { putBoolean(KEY_GALLERY, value) }
+
+    /** [ImageSource] key: paintings, nature, space or a mix of the three. */
+    var imageSource: String
+        get() = sp.getString(KEY_IMAGE_SOURCE, ImageSource.MIX.key) ?: ImageSource.MIX.key
+        set(value) = sp.edit { putString(KEY_IMAGE_SOURCE, value) }
 
     /** Added to the day number, so "next artwork" skips ahead and still rotates daily. */
     var artworkOffset: Int
@@ -182,6 +187,7 @@ class Prefs private constructor(context: Context) {
         private const val KEY_ANIMATIONS = "animations"
         private const val KEY_SHOW_LABELS = "show_labels"
         private const val KEY_GALLERY = "gallery"
+        private const val KEY_IMAGE_SOURCE = "image_source"
         private const val KEY_ARTWORK_OFFSET = "artwork_offset"
         private const val KEY_ARTWORK_CURRENT = "artwork_current"
         private const val KEY_WEATHER = "weather"
