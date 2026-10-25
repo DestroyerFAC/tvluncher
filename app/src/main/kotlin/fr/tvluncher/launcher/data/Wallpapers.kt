@@ -88,7 +88,7 @@ object Wallpapers {
         }
 
     /** Two-pass decode: measure first, then load at the smallest sufficient sample size. */
-    private fun decodeSampled(path: String, reqWidth: Int, reqHeight: Int): android.graphics.Bitmap? {
+    fun decodeSampled(path: String, reqWidth: Int, reqHeight: Int): android.graphics.Bitmap? {
         if (!File(path).exists()) return null
         val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
         BitmapFactory.decodeFile(path, bounds)

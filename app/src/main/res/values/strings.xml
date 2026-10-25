@@ -85,4 +85,32 @@
     <string name="on">Activé</string>
     <string name="off">Désactivé</string>
     <string name="close">Fermer</string>
+
+    <!-- Gallery home -->
+    <string name="home_next_artwork">Œuvre suivante</string>
+    <string name="home_screensaver_now">Lancer l\'écran de veille</string>
+    <string name="home_refresh">Actualiser</string>
+    <string name="home_hide_ui">Afficher seulement l\'œuvre</string>
+    <string name="home_hidden_hint">Appuyez sur une touche pour revenir</string>
+    <string name="home_volume">Volume</string>
+    <string name="pill_style">Style</string>
+    <string name="pill_style_gallery">Galerie</string>
+    <string name="pill_style_classic">Classique</string>
+    <string name="pill_clock">Horloge</string>
+    <string name="pill_clock_24">24 heures</string>
+    <string name="pill_clock_12">12 heures</string>
+    <string name="pill_weather">Météo</string>
+    <string name="pill_labels">Noms des apps</string>
+    <string name="pill_labels_shown">Affichés</string>
+    <string name="pill_labels_hidden">Masqués</string>
+    <string name="settings_gallery">Style Galerie</string>
+    <string name="settings_gallery_summary">Un tableau du domaine public chaque jour (Art Institute of Chicago). Désactivé : le fond d\'écran ci-dessous.</string>
+    <string name="weather_line">%1$d° %2$s</string>
+    <string name="weather_clear">Dégagé</string>
+    <string name="weather_partly">Éclaircies</string>
+    <string name="weather_cloudy">Nuageux</string>
+    <string name="weather_fog">Brouillard</string>
+    <string name="weather_rain">Pluie</string>
+    <string name="weather_snow">Neige</string>
+    <string name="weather_storm">Orage</string>
 </resources>

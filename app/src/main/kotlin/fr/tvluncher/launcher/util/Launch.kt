@@ -80,6 +80,18 @@ object Launch {
         if (!start(context, intent, onError = null)) systemSettings(context)
     }
 
+    /**
+     * Starts the screensaver right now. There is no public API for this; the
+     * Somnambulator activity is what the system's own "Start now" uses and exists
+     * on stock Android TV builds. Elsewhere, the picker is the next best thing.
+     */
+    fun screensaverNow(context: Context) {
+        val intent = Intent(Intent.ACTION_MAIN)
+            .setClassName("com.android.systemui", "com.android.systemui.Somnambulator")
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        if (!start(context, intent, onError = null)) screensaverSettings(context)
+    }
+
     private fun start(
         context: Context,
         intent: Intent,

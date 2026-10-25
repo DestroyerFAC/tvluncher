@@ -96,6 +96,13 @@ class SettingsActivity : AppCompatActivity() {
         val rows = buildList {
             add(SettingRow.Header(getString(R.string.settings_section_appearance)))
             add(
+                SettingRow.Toggle(
+                    title = getString(R.string.settings_gallery),
+                    summary = getString(R.string.settings_gallery_summary),
+                    checked = prefs.galleryStyle,
+                ) { prefs.galleryStyle = it; rebuild() }
+            )
+            add(
                 SettingRow.Action(
                     title = getString(R.string.settings_wallpaper),
                     value = currentWallpaperLabel(),

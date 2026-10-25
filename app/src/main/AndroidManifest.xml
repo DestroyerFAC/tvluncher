@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Optional: only used by the weather chip (Open-Meteo, no account, no tracker).
-         Remove this line if you want a launcher with zero network access. -->
+    <!-- Used by the painting of the day (Art Institute of Chicago, CC0) and the
+         optional weather (Open-Meteo). Neither needs an account or sends anything
+         about the viewer. Remove this line for a launcher with zero network access. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- Lets the "uninstall" action in the tile menu skip the confirmation screen chain. -->

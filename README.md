@@ -8,6 +8,12 @@ Aucune publicité, aucun bandeau sponsorisé, aucune analyse, aucun traceur.
 
 ## Ce que ça fait
 
+- **Style Galerie** (par défaut) : un tableau de maître du domaine public en plein
+  écran, renouvelé chaque jour, avec son cartel (peintre, date, titre). Grande
+  horloge, date et météo en haut à gauche ; panneau rapide en haut à droite
+  (style, horloge, météo, noms des apps, œuvre suivante, écran de veille,
+  actualiser, « œuvre seule », volume). Le style **Classique** garde un fond
+  d'écran fixe.
 - **Une rangée de favoris** en plein écran, tuiles 16:9 qui utilisent la bannière
   officielle de chaque application TV. La tuile sélectionnée grossit, se soulève
   et reste centrée pendant que la rangée défile dessous.
@@ -23,9 +29,18 @@ Aucune publicité, aucun bandeau sponsorisé, aucune analyse, aucun traceur.
 
 Le dépôt ne contient pas d'APK. Deux façons d'en obtenir un :
 
-**A. Via GitHub Actions (aucun outil à installer).** Chaque push déclenche le
-workflow *Build APK* ; téléchargez l'artefact `tvluncher-apk` depuis l'onglet
-Actions.
+**A. Directement sur la box, sans ordinateur.** Installez l'application
+*Downloader* depuis le Play Store de la box, autorisez-la à installer des
+applications, puis saisissez :
+
+```
+github.com/DestroyerFAC/tvluncher/releases/download/apk/tvluncher.apk
+```
+
+Ce lien sert toujours la dernière version construite par GitHub Actions. Les
+versions sont signées avec la clé `app/sideload.keystore` du dépôt, donc une
+mise à jour s'installe par-dessus la précédente. Cette clé est publique : elle
+garantit la continuité des mises à jour, pas l'identité de l'auteur.
 
 **B. En local**, avec le SDK Android (ou Android Studio) :
 
@@ -90,11 +105,13 @@ l'écran reste noir et la télécommande ne répond plus. D'où :
 |---|---|
 | Publicités | aucune |
 | Analyse / télémétrie | aucune |
-| Permissions | `INTERNET` (météo seulement), `ACCESS_NETWORK_STATE`, `REQUEST_DELETE_PACKAGES`, `RECEIVE_BOOT_COMPLETED` |
-| Requêtes réseau | une seule, vers `open-meteo.com`, toutes les 30 min, **uniquement si vous activez la météo** |
+| Permissions | `INTERNET` (tableau du jour et météo), `ACCESS_NETWORK_STATE`, `REQUEST_DELETE_PACKAGES`, `RECEIVE_BOOT_COMPLETED` |
+| Requêtes réseau | `api.artic.edu` / `www.artic.edu` (catalogue une fois par semaine, une image par jour) **en style Galerie** ; `open-meteo.com` toutes les 30 min **si la météo est activée** |
 
-La météo est désactivée par défaut. Sans elle, l'application ne contacte aucun
-serveur ; vous pouvez retirer la ligne `INTERNET` du manifeste et recompiler.
+Les tableaux viennent de l'Art Institute of Chicago (collection ouverte, licence
+CC0) : aucune clé, aucun compte, rien sur le spectateur n'est transmis. Ils sont
+mis en cache, donc le dernier tableau reste affiché sans connexion. En style
+Classique sans météo, l'application ne contacte aucun serveur.
 
 ## Développement
 

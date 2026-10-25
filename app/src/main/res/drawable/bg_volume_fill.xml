@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The volume level is the drawable level (0..10000), so moving it is a redraw,
+     never a layout pass. -->
+<clip xmlns:android="http://schemas.android.com/apk/res/android"
+    android:clipOrientation="horizontal"
+    android:gravity="start">
+    <shape android:shape="rectangle">
+        <corners android:radius="100dp" />
+        <solid android:color="#33FFFFFF" />
+    </shape>
+</clip>

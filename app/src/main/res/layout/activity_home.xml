@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- clipChildren="false" all the way down: the focused tile scales past its own
+<!-- Gallery home: a painting full screen, the clock top left, a quick panel top
+     right and a glass dock at the bottom.
+
+     clipChildren="false" all the way down: the focused tile scales past its own
      bounds and its shadow past that, and either would be sliced off otherwise. -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -22,104 +25,350 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <View
+        android:id="@+id/scrimTop"
+        android:layout_width="0dp"
+        android:layout_height="220dp"
+        android:background="@drawable/scrim_top"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <View
         android:id="@+id/scrim"
         android:layout_width="0dp"
-        android:layout_height="360dp"
+        android:layout_height="260dp"
         android:background="@drawable/scrim_bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Clock, date, weather -->
     <LinearLayout
-        android:id="@+id/statusPill"
+        android:id="@+id/clockBlock"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/pill_height"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@drawable/bg_pill"
-        android:paddingStart="20dp"
-        android:paddingEnd="6dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="@dimen/screen_margin_horizontal"
         android:layout_marginTop="@dimen/screen_margin_vertical"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/clock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:includeFontPadding="false"
             android:textColor="@color/text_primary"
-            android:textSize="@dimen/text_clock"
+            android:textSize="@dimen/text_clock_large"
             android:textStyle="bold"
-            android:includeFontPadding="false" />
+            android:shadowColor="#73000000"
+            android:shadowRadius="12" />
 
         <TextView
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:textColor="@color/text_secondary"
-            android:textSize="@dimen/text_pill"
-            android:includeFontPadding="false" />
+            android:layout_marginTop="8dp"
+            android:includeFontPadding="false"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_clock_sub"
+            android:shadowColor="#73000000"
+            android:shadowRadius="8" />
 
-        <ImageView
-            android:id="@+id/weatherIcon"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:layout_marginStart="14dp"
-            android:contentDescription="@string/cd_weather"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/weatherTemp"
+        <LinearLayout
+            android:id="@+id/weatherRow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:textColor="@color/text_primary"
-            android:textSize="@dimen/text_pill"
-            android:includeFontPadding="false"
-            android:visibility="gone" />
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="16dp"
-            android:background="@color/surface_stroke" />
+            <ImageView
+                android:id="@+id/weatherIcon"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:contentDescription="@string/cd_weather"
+                android:visibility="gone" />
 
-        <ImageButton
-            android:id="@+id/btnAllApps"
-            android:layout_width="@dimen/pill_button"
-            android:layout_height="@dimen/pill_button"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/bg_circle_button"
-            android:src="@drawable/ic_apps"
-            android:scaleType="centerInside"
-            android:padding="11dp"
-            android:contentDescription="@string/all_apps"
-            android:focusable="true" />
-
-        <ImageButton
-            android:id="@+id/btnSettings"
-            android:layout_width="@dimen/pill_button"
-            android:layout_height="@dimen/pill_button"
-            android:layout_marginStart="6dp"
-            android:background="@drawable/bg_circle_button"
-            android:src="@drawable/ic_settings"
-            android:scaleType="centerInside"
-            android:padding="11dp"
-            android:contentDescription="@string/settings"
-            android:focusable="true" />
+            <TextView
+                android:id="@+id/weatherTemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:includeFontPadding="false"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_clock_sub"
+                android:shadowColor="#73000000"
+                android:shadowRadius="8"
+                android:visibility="gone" />
+        </LinearLayout>
     </LinearLayout>
 
+    <!-- Quick panel -->
+    <LinearLayout
+        android:id="@+id/quickPanel"
+        android:layout_width="@dimen/panel_width"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginEnd="@dimen/screen_margin_horizontal"
+        android:layout_marginTop="@dimen/screen_margin_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <ImageButton
+                android:id="@+id/btnAllApps"
+                android:layout_width="@dimen/control_small"
+                android:layout_height="@dimen/control_small"
+                android:background="@drawable/bg_glass_control"
+                android:src="@drawable/ic_apps"
+                android:scaleType="centerInside"
+                android:padding="8dp"
+                android:contentDescription="@string/all_apps"
+                app:tint="@color/glass_content" />
+
+            <ImageButton
+                android:id="@+id/btnSettings"
+                android:layout_width="@dimen/control_small"
+                android:layout_height="@dimen/control_small"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_glass_control"
+                android:src="@drawable/ic_settings"
+                android:scaleType="centerInside"
+                android:padding="8dp"
+                android:contentDescription="@string/settings"
+                app:tint="@color/glass_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/control_gap"
+            android:orientation="horizontal">
+
+            <include
+                android:id="@+id/pillStyle"
+                layout="@layout/view_quick_pill" />
+
+            <Space
+                android:layout_width="@dimen/control_gap"
+                android:layout_height="0dp" />
+
+            <include
+                android:id="@+id/pillClock"
+                layout="@layout/view_quick_pill" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/control_gap"
+            android:orientation="horizontal">
+
+            <include
+                android:id="@+id/pillWeather"
+                layout="@layout/view_quick_pill" />
+
+            <Space
+                android:layout_width="@dimen/control_gap"
+                android:layout_height="0dp" />
+
+            <include
+                android:id="@+id/pillLabels"
+                layout="@layout/view_quick_pill" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/control_gap"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnNextArt"
+                android:layout_width="@dimen/control_height"
+                android:layout_height="@dimen/control_height"
+                android:background="@drawable/bg_glass_control"
+                android:src="@drawable/ic_image"
+                android:scaleType="centerInside"
+                android:padding="13dp"
+                android:contentDescription="@string/home_next_artwork"
+                app:tint="@color/glass_content" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/btnScreensaver"
+                android:layout_width="@dimen/control_height"
+                android:layout_height="@dimen/control_height"
+                android:background="@drawable/bg_glass_control"
+                android:src="@drawable/ic_weather_moon"
+                android:scaleType="centerInside"
+                android:padding="13dp"
+                android:contentDescription="@string/home_screensaver_now"
+                app:tint="@color/glass_content" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/btnRefresh"
+                android:layout_width="@dimen/control_height"
+                android:layout_height="@dimen/control_height"
+                android:background="@drawable/bg_glass_control"
+                android:src="@drawable/ic_refresh"
+                android:scaleType="centerInside"
+                android:padding="13dp"
+                android:contentDescription="@string/home_refresh"
+                app:tint="@color/glass_content" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/btnHideUi"
+                android:layout_width="@dimen/control_height"
+                android:layout_height="@dimen/control_height"
+                android:background="@drawable/bg_glass_control"
+                android:src="@drawable/ic_eye"
+                android:scaleType="centerInside"
+                android:padding="13dp"
+                android:contentDescription="@string/home_hide_ui"
+                app:tint="@color/glass_content" />
+        </LinearLayout>
+
+        <!-- Volume: left/right on the remote while focused. -->
+        <FrameLayout
+            android:id="@+id/volumePill"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/control_height"
+            android:layout_marginTop="@dimen/control_gap"
+            android:background="@drawable/bg_glass_control"
+            android:focusable="true"
+            android:clickable="true"
+            android:contentDescription="@string/home_volume">
+
+            <View
+                android:id="@+id/volumeFill"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_volume_fill"
+                android:duplicateParentState="true" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="14dp"
+                android:paddingEnd="16dp"
+                android:duplicateParentState="true">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_volume"
+                    android:duplicateParentState="true"
+                    android:importantForAccessibility="no"
+                    app:tint="@color/glass_content" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    android:duplicateParentState="true"
+                    android:text="@string/home_volume"
+                    android:textColor="@color/glass_content"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/volumeValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:duplicateParentState="true"
+                    android:textColor="@color/glass_content"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/deviceName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:textColor="@color/text_primary"
+            android:textSize="12sp"
+            android:shadowColor="#99000000"
+            android:shadowRadius="6" />
+    </LinearLayout>
+
+    <!-- Museum label for the painting -->
+    <LinearLayout
+        android:id="@+id/artCredit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="end"
+        android:layout_marginEnd="@dimen/screen_margin_horizontal"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/rowContainer"
+        app:layout_goneMarginBottom="@dimen/screen_margin_vertical">
+
+        <TextView
+            android:id="@+id/artArtist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="420dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp"
+            android:shadowColor="#99000000"
+            android:shadowRadius="6" />
+
+        <TextView
+            android:id="@+id/artTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:maxWidth="420dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:shadowColor="#99000000"
+            android:shadowRadius="6" />
+    </LinearLayout>
+
+    <!-- Dock -->
     <FrameLayout
         android:id="@+id/rowContainer"
         android:layout_width="0dp"
-        android:layout_height="196dp"
-        android:background="@drawable/bg_row_glass"
+        android:layout_height="wrap_content"
+        android:minHeight="116dp"
+        android:background="@drawable/bg_dock"
         android:clipChildren="false"
-        android:layout_marginStart="@dimen/screen_margin_horizontal"
-        android:layout_marginEnd="@dimen/screen_margin_horizontal"
-        android:layout_marginBottom="52dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -127,11 +376,12 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/favouritesRow"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:paddingStart="26dp"
-            android:paddingEnd="26dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
             android:paddingTop="@dimen/row_vertical_padding"
             android:paddingBottom="@dimen/row_vertical_padding"
             android:focusable="false"
@@ -166,4 +416,19 @@
                 android:gravity="center" />
         </LinearLayout>
     </FrameLayout>
+
+    <TextView
+        android:id="@+id/hiddenHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/screen_margin_horizontal"
+        android:layout_marginBottom="@dimen/screen_margin_vertical"
+        android:text="@string/home_hidden_hint"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp"
+        android:shadowColor="#99000000"
+        android:shadowRadius="6"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

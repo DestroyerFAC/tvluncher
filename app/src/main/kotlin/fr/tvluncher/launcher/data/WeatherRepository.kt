@@ -3,6 +3,7 @@ package fr.tvluncher.launcher.data
 import android.content.Context
 import android.util.Log
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import fr.tvluncher.launcher.R
 import java.net.HttpURLConnection
 import java.net.URL
@@ -18,6 +19,9 @@ data class WeatherState(
 ) {
     @get:DrawableRes
     val iconRes: Int get() = iconFor(wmoCode, isDay)
+
+    @get:StringRes
+    val labelRes: Int get() = labelFor(wmoCode)
 
     fun serialise(): String = "$temperatureCelsius;$wmoCode;${if (isDay) 1 else 0}"
 
@@ -41,6 +45,19 @@ data class WeatherState(
             in 71..77, 85, 86 -> R.drawable.ic_weather_snow
             in 95..99 -> R.drawable.ic_weather_storm
             else -> R.drawable.ic_weather_cloud
+        }
+
+        /** Same buckets as [iconFor], so the word always matches the picture. */
+        @StringRes
+        fun labelFor(code: Int): Int = when (code) {
+            0 -> R.string.weather_clear
+            1, 2 -> R.string.weather_partly
+            3 -> R.string.weather_cloudy
+            45, 48 -> R.string.weather_fog
+            in 51..57, in 61..67, in 80..82 -> R.string.weather_rain
+            in 71..77, 85, 86 -> R.string.weather_snow
+            in 95..99 -> R.string.weather_storm
+            else -> R.string.weather_cloudy
         }
     }
 }

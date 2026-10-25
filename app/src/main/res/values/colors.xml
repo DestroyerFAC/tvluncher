@@ -19,4 +19,10 @@
     <color name="tile_placeholder">#FF2A3039</color>
     <color name="scrim">#99000000</color>
     <color name="accent">#FF4C8DFF</color>
+
+    <!-- Gallery home: lighter, brighter glass than the classic surfaces, so the
+         painting reads through the controls. -->
+    <color name="glass_fill">#38FFFFFF</color>
+    <color name="glass_fill_dock">#24FFFFFF</color>
+    <color name="glass_stroke">#40FFFFFF</color>
 </resources>

@@ -90,8 +90,25 @@ class Prefs private constructor(context: Context) {
 
     /** Shows app names under the tiles. Off is closer to the Apple TV look. */
     var showLabels: Boolean
-        get() = sp.getBoolean(KEY_SHOW_LABELS, true)
+        get() = sp.getBoolean(KEY_SHOW_LABELS, false)
         set(value) = sp.edit { putBoolean(KEY_SHOW_LABELS, value) }
+
+    // --- Gallery ----------------------------------------------------------
+
+    /** Painting of the day plus the quick panel. Off is the plain wallpaper home. */
+    var galleryStyle: Boolean
+        get() = sp.getBoolean(KEY_GALLERY, true)
+        set(value) = sp.edit { putBoolean(KEY_GALLERY, value) }
+
+    /** Added to the day number, so "next artwork" skips ahead and still rotates daily. */
+    var artworkOffset: Int
+        get() = sp.getInt(KEY_ARTWORK_OFFSET, 0)
+        set(value) = sp.edit { putInt(KEY_ARTWORK_OFFSET, value) }
+
+    /** JSON of the painting on screen, so it can be redrawn offline at boot. */
+    var artworkCurrent: String?
+        get() = sp.getString(KEY_ARTWORK_CURRENT, null)
+        set(value) = sp.edit { putString(KEY_ARTWORK_CURRENT, value) }
 
     // --- Weather ----------------------------------------------------------
 
@@ -164,6 +181,9 @@ class Prefs private constructor(context: Context) {
         private const val KEY_CLOCK_24H = "clock_24h"
         private const val KEY_ANIMATIONS = "animations"
         private const val KEY_SHOW_LABELS = "show_labels"
+        private const val KEY_GALLERY = "gallery"
+        private const val KEY_ARTWORK_OFFSET = "artwork_offset"
+        private const val KEY_ARTWORK_CURRENT = "artwork_current"
         private const val KEY_WEATHER = "weather"
         private const val KEY_WEATHER_CITY = "weather_city"
         private const val KEY_WEATHER_LAT = "weather_lat"

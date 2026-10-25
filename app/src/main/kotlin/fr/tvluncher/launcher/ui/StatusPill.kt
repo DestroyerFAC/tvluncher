@@ -73,10 +73,11 @@ class StatusPill(
         val timePattern = if (prefs.use24hClock) "HH:mm" else "h:mm a"
         clockView.text = DateFormat.format(timePattern, now)
 
-        // A localised skeleton, so French gets "dim. 30 août" and English
-        // "Sun, 30 Aug" without hardcoding either.
-        val datePattern = DateFormat.getBestDateTimePattern(locale, "EEEdMMM")
-        dateView.text = DateFormat.format(datePattern, now)
+        // A localised skeleton, so French gets "Vendredi 23 octobre" and English
+        // "Friday, October 23" without hardcoding either.
+        val datePattern = DateFormat.getBestDateTimePattern(locale, "EEEEdMMMM")
+        dateView.text = DateFormat.format(datePattern, now).toString()
+            .replaceFirstChar { it.titlecase(locale) }
     }
 
     fun refreshWeather() {
@@ -95,8 +96,9 @@ class StatusPill(
             weatherIcon.setImageResource(weather.iconRes)
             weatherIcon.visibility = View.VISIBLE
             weatherTemp.text = context.getString(
-                fr.tvluncher.launcher.R.string.temperature_format,
-                weather.temperatureCelsius
+                fr.tvluncher.launcher.R.string.weather_line,
+                weather.temperatureCelsius,
+                context.getString(weather.labelRes),
             )
             weatherTemp.visibility = View.VISIBLE
         }

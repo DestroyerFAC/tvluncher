@@ -12,18 +12,27 @@ android {
         // Android 8.0. The Free Player TV ships Android TV 9 (Pop) / 11 (Ultra).
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 2
+        versionName = "1.1.0"
         resourceConfigurations += setOf("fr", "en")
     }
 
     signingConfigs {
-        // Sideloaded builds are signed with a stable local key when one is provided,
-        // so upgrades install over each other instead of failing with a signature clash.
+        // Sideloaded builds must share one key, or every update fails with a
+        // signature clash and the user has to uninstall first. A private key can
+        // be supplied through SIDELOAD_*; otherwise the repo's own key is used.
+        // That key is public, so it proves nothing about who built the APK; it
+        // only keeps upgrades working. Installing still needs physical or ADB
+        // access to the box, which is the actual trust boundary.
         create("sideload") {
             val store = (project.findProperty("SIDELOAD_STORE_FILE") as String?)
                 ?: System.getenv("SIDELOAD_STORE_FILE")
-            if (store != null) {
+            if (store == null) {
+                storeFile = file("sideload.keystore")
+                storePassword = "tvluncher"
+                keyAlias = "tvluncher"
+                keyPassword = "tvluncher"
+            } else {
                 storeFile = file(store)
                 storePassword = (project.findProperty("SIDELOAD_STORE_PASSWORD") as String?)
                     ?: System.getenv("SIDELOAD_STORE_PASSWORD")
