@@ -25,6 +25,7 @@ import fr.tvluncher.launcher.data.AppInfo
 import fr.tvluncher.launcher.data.AppRepository
 import fr.tvluncher.launcher.data.Artworks
 import fr.tvluncher.launcher.data.DisplayedArtwork
+import fr.tvluncher.launcher.data.DockSeeder
 import fr.tvluncher.launcher.data.ImageSource
 import fr.tvluncher.launcher.data.Prefs
 import fr.tvluncher.launcher.data.Wallpapers
@@ -464,7 +465,7 @@ class HomeActivity : AppCompatActivity() {
     private fun render(apps: List<AppInfo>) {
         if (apps.isEmpty()) return
 
-        val ids = prefs.favourites.ifEmpty { seedFavourites(apps) }
+        val ids = prefs.favourites.ifEmpty { seedFavourites(apps) }.let { putStreamingFirst(it, apps) }
         favouriteApps = repository.resolve(ids)
 
         adapter.favourites = favouriteApps.map { it.id }.toSet()
@@ -510,12 +511,24 @@ class HomeActivity : AppCompatActivity() {
      */
     private fun seedFavourites(apps: List<AppInfo>): List<String> {
         if (prefs.onboardingDone) return emptyList()
-        val seed = apps.filter { it.isLeanback }
-            .take(SEED_FAVOURITE_COUNT)
-            .map { it.id }
+        val seed = DockSeeder.initial(apps)
         prefs.favourites = seed
         prefs.onboardingDone = true
+        prefs.dockStreamingDone = true
         return seed
+    }
+
+    /**
+     * Earlier versions seeded the dock alphabetically, which left Netflix or
+     * Prime Video down in the grid. Once per profile, the installed streaming
+     * apps move to the front; after that the dock is the user's to arrange.
+     */
+    private fun putStreamingFirst(ids: List<String>, apps: List<AppInfo>): List<String> {
+        if (prefs.dockStreamingDone) return ids
+        val updated = DockSeeder.withStreamingFirst(ids, apps)
+        prefs.dockStreamingDone = true
+        if (updated != ids) prefs.favourites = updated
+        return updated
     }
 
     private fun showTileMenu(app: AppInfo) {
@@ -683,7 +696,6 @@ class HomeActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val SEED_FAVOURITE_COUNT = 6
         private const val HEALTHY_AFTER_MS = 10_000L
         private const val MAX_DRAWABLE_LEVEL = 10_000
         private const val GRID_COLUMNS = 5

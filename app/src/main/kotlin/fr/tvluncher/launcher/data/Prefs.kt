@@ -62,6 +62,7 @@ class Prefs private constructor(private val context: Context) {
         sp.edit {
             remove(scoped(KEY_FAVOURITES, id))
             remove(scoped(KEY_HIDDEN, id))
+            remove(scoped(KEY_DOCK_STREAMING, id))
         }
         if (sp.getString(KEY_CURRENT_PROFILE, null) == id) currentProfileId = profiles.first().id
     }
@@ -78,6 +79,11 @@ class Prefs private constructor(private val context: Context) {
 
     fun setHiddenFor(profileId: String, value: Set<String>) =
         sp.edit { putStringSet(scoped(KEY_HIDDEN, profileId), value) }
+
+    /** Set once the current profile's dock has had its streaming apps put first. */
+    var dockStreamingDone: Boolean
+        get() = sp.getBoolean(scoped(KEY_DOCK_STREAMING, currentProfileId), false)
+        set(value) = sp.edit { putBoolean(scoped(KEY_DOCK_STREAMING, currentProfileId), value) }
 
     // --- Favourites -------------------------------------------------------
 
@@ -248,6 +254,7 @@ class Prefs private constructor(private val context: Context) {
         private const val KEY_CURRENT_PROFILE = "current_profile"
         private const val KEY_FAVOURITES = "favourites"
         private const val KEY_HIDDEN = "hidden"
+        private const val KEY_DOCK_STREAMING = "dock_streaming"
         private const val KEY_WALLPAPER = "wallpaper"
         private const val KEY_WALLPAPER_PATH = "wallpaper_path"
         private const val KEY_SHOW_PILL = "show_pill"
