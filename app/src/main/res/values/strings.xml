@@ -124,4 +124,12 @@
     <string name="home_button_prompt_title">Le bouton Accueil ouvre encore l\'ancien écran</string>
     <string name="home_button_prompt_enable">Activer (Accessibilité → TV Luncher : bouton Accueil)</string>
     <string name="home_button_prompt_later">Plus tard</string>
+    <string name="update_available">Mise à jour disponible : version %1$s</string>
+    <string name="update_install">Installer maintenant</string>
+    <string name="update_later">Plus tard</string>
+    <string name="update_downloading">Téléchargement de la mise à jour…</string>
+    <string name="update_needs_permission">Autorisez « TV Luncher » à installer des applications, puis relancez la mise à jour.</string>
+    <string name="update_failed">La mise à jour a échoué. Réessayez plus tard.</string>
+    <string name="update_none">TV Luncher est à jour.</string>
+    <string name="settings_check_update">Rechercher une mise à jour</string>
 </resources>

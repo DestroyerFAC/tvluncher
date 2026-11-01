@@ -9,6 +9,9 @@
     <!-- Lets the "uninstall" action in the tile menu skip the confirmation screen chain. -->
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Self-update from the project's GitHub release. Android still asks the
+         user to allow it once and to confirm each update. -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <uses-feature
         android:name="android.software.leanback"
@@ -118,6 +121,10 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/home_button_service" />
         </service>
+
+        <receiver
+            android:name=".update.InstallResultReceiver"
+            android:exported="false" />
 
         <receiver
             android:name=".data.PackageChangeReceiver"

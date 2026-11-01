@@ -27,6 +27,8 @@ import fr.tvluncher.launcher.data.Prefs
 import fr.tvluncher.launcher.data.Wallpapers
 import fr.tvluncher.launcher.data.WeatherRepository
 import fr.tvluncher.launcher.databinding.ActivitySettingsBinding
+import fr.tvluncher.launcher.update.UpdatePrompt
+import fr.tvluncher.launcher.update.Updater
 import fr.tvluncher.launcher.util.Launch
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -225,6 +227,21 @@ class SettingsActivity : AppCompatActivity() {
                     summary = getString(R.string.settings_about_privacy),
                     icon = R.drawable.ic_info,
                 ) { }
+            )
+            add(
+                SettingRow.Action(
+                    title = getString(R.string.settings_check_update),
+                    icon = R.drawable.ic_refresh,
+                ) {
+                    lifecycleScope.launch {
+                        val release = Updater.check(this@SettingsActivity, force = true)
+                        if (release != null) {
+                            UpdatePrompt.show(this@SettingsActivity, release)
+                        } else {
+                            Toast.makeText(this@SettingsActivity, R.string.update_none, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
             )
         }
         adapter.submit(rows)

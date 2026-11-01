@@ -117,4 +117,12 @@
     <string name="home_button_prompt_title">The Home button still opens the old screen</string>
     <string name="home_button_prompt_enable">Turn on (Accessibility → TV Luncher: Home button)</string>
     <string name="home_button_prompt_later">Later</string>
+    <string name="update_available">Update available: version %1$s</string>
+    <string name="update_install">Install now</string>
+    <string name="update_later">Later</string>
+    <string name="update_downloading">Downloading the update…</string>
+    <string name="update_needs_permission">Allow "TV Luncher" to install apps, then start the update again.</string>
+    <string name="update_failed">The update failed. Try again later.</string>
+    <string name="update_none">TV Luncher is up to date.</string>
+    <string name="settings_check_update">Check for updates</string>
 </resources>

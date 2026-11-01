@@ -41,7 +41,10 @@ applications, puis saisissez :
 github.com/DestroyerFAC/tvluncher/releases/download/apk/tvluncher.apk
 ```
 
-Ce lien sert toujours la dernière version construite par GitHub Actions. Les
+Ce lien sert toujours la dernière version construite par GitHub Actions.
+Une fois installée, l'application vérifie elle-même ce lien (au plus toutes les
+6 h, ou via Réglages → Rechercher une mise à jour) et propose la mise à jour :
+un clic suffit, Android demande seulement de confirmer l'installation. Les
 versions sont signées avec la clé `app/sideload.keystore` du dépôt, donc une
 mise à jour s'installe par-dessus la précédente. Cette clé est publique : elle
 garantit la continuité des mises à jour, pas l'identité de l'auteur.

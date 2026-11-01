@@ -12,8 +12,11 @@ android {
         // Android 8.0. The Free Player TV ships Android TV 9 (Pop) / 11 (Ultra).
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
-        versionName = "1.1.0"
+        // CI passes 1000 + its run number, so every published build is newer than
+        // the last and the in-app updater can tell them apart. Local builds: 2.
+        val ciVersion = System.getenv("VERSION_CODE")?.toIntOrNull()
+        versionCode = ciVersion ?: 2
+        versionName = if (ciVersion != null) "1.2.$ciVersion" else "1.2.0-local"
         resourceConfigurations += setOf("fr", "en")
     }
 

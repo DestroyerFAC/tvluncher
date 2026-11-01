@@ -27,6 +27,10 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      # Read by app/build.gradle.kts; also written to version.json below.
+      - name: Compute version
+        run: echo "VERSION_CODE=$((1000 + GITHUB_RUN_NUMBER))" >> "$GITHUB_ENV"
+
       - name: Assemble debug
         run: ./gradlew --no-daemon assembleDebug
 
@@ -54,8 +58,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cp app/build/outputs/apk/release/app-release.apk tvluncher.apk
+          printf '{"versionCode":%d,"versionName":"1.2.%d"}\n' "$VERSION_CODE" "$VERSION_CODE" > version.json
           gh release delete apk --yes --cleanup-tag || true
-          gh release create apk tvluncher.apk \
+          gh release create apk tvluncher.apk version.json \
             --target "$GITHUB_SHA" \
             --title "TV Luncher (dernière version)" \
             --notes "APK construit automatiquement depuis ${GITHUB_SHA::7}. Lien direct : https://github.com/${GITHUB_REPOSITORY}/releases/download/apk/tvluncher.apk"

@@ -145,6 +145,12 @@ class Prefs private constructor(context: Context) {
         get() = sp.getLong(KEY_WEATHER_CACHE_AT, 0L)
         set(value) = sp.edit { putLong(KEY_WEATHER_CACHE_AT, value) }
 
+    // --- Updates ----------------------------------------------------------
+
+    var lastUpdateCheckAt: Long
+        get() = sp.getLong(KEY_UPDATE_CHECK_AT, 0L)
+        set(value) = sp.edit { putLong(KEY_UPDATE_CHECK_AT, value) }
+
     // --- First run --------------------------------------------------------
 
     var onboardingDone: Boolean
@@ -197,6 +203,7 @@ class Prefs private constructor(context: Context) {
         private const val KEY_WEATHER_CACHE = "weather_cache"
         private const val KEY_WEATHER_CACHE_AT = "weather_cache_at"
         private const val KEY_ONBOARDED = "onboarded"
+        private const val KEY_UPDATE_CHECK_AT = "update_check_at"
 
         @Volatile
         private var instance: Prefs? = null

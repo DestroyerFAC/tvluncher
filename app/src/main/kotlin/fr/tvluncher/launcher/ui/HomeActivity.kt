@@ -34,6 +34,8 @@ import fr.tvluncher.launcher.databinding.ViewQuickPillBinding
 import fr.tvluncher.launcher.util.CrashGuard
 import fr.tvluncher.launcher.util.Launch
 import fr.tvluncher.launcher.util.Volume
+import fr.tvluncher.launcher.update.UpdatePrompt
+import fr.tvluncher.launcher.update.Updater
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -610,9 +612,9 @@ class HomeActivity : AppCompatActivity() {
      * stock launcher until the accessibility service is on. Say so once per run
      * rather than leaving the user to wonder why the button "does not work".
      */
-    private fun maybePromptHomeButton() {
-        if (homeButtonPrompted) return
-        if (HomeButtonService.isDefaultHome(this) || HomeButtonService.isEnabled(this)) return
+    private fun maybePromptHomeButton(): Boolean {
+        if (homeButtonPrompted) return false
+        if (HomeButtonService.isDefaultHome(this) || HomeButtonService.isEnabled(this)) return false
         homeButtonPrompted = true
         Sheet.show(
             this,
@@ -624,11 +626,21 @@ class HomeActivity : AppCompatActivity() {
                 Sheet.Item(getString(R.string.home_button_prompt_later)) { },
             ),
         )
+        return true
+    }
+
+    /** Throttled inside [Updater.check], so calling it on every return home is cheap. */
+    private fun maybeOfferUpdate() {
+        lifecycleScope.launch {
+            val release = Updater.check(this@HomeActivity) ?: return@launch
+            UpdatePrompt.show(this@HomeActivity, release)
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        maybePromptHomeButton()
+        // One sheet at a time: the update can wait for the next return home.
+        if (!maybePromptHomeButton()) maybeOfferUpdate()
         loadWallpaper()
         statusPill?.start()
         // Catches installs that happened while the launcher was in the background,
