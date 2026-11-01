@@ -92,6 +92,12 @@ object Launch {
         if (!start(context, intent, onError = null)) screensaverSettings(context)
     }
 
+    /** Accessibility settings, where the HOME button service is switched on. */
+    fun accessibilitySettings(context: Context) {
+        val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        if (!start(context, intent, onError = null)) systemSettings(context)
+    }
+
     private fun start(
         context: Context,
         intent: Intent,

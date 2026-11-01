@@ -16,6 +16,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
+import fr.tvluncher.launcher.HomeButtonService
 import fr.tvluncher.launcher.R
 import fr.tvluncher.launcher.data.AppInfo
 import fr.tvluncher.launcher.data.AppRepository
@@ -423,8 +424,30 @@ class HomeActivity : AppCompatActivity() {
         return true
     }
 
+    /**
+     * Where HOME cannot be reassigned (Free Player), the remote keeps opening the
+     * stock launcher until the accessibility service is on. Say so once per run
+     * rather than leaving the user to wonder why the button "does not work".
+     */
+    private fun maybePromptHomeButton() {
+        if (homeButtonPrompted) return
+        if (HomeButtonService.isDefaultHome(this) || HomeButtonService.isEnabled(this)) return
+        homeButtonPrompted = true
+        Sheet.show(
+            this,
+            getString(R.string.home_button_prompt_title),
+            items = listOf(
+                Sheet.Item(getString(R.string.home_button_prompt_enable), R.drawable.ic_home) {
+                    Launch.accessibilitySettings(this)
+                },
+                Sheet.Item(getString(R.string.home_button_prompt_later)) { },
+            ),
+        )
+    }
+
     override fun onStart() {
         super.onStart()
+        maybePromptHomeButton()
         loadWallpaper()
         statusPill?.start()
         // Catches installs that happened while the launcher was in the background,
@@ -470,5 +493,8 @@ class HomeActivity : AppCompatActivity() {
         private const val SEED_FAVOURITE_COUNT = 6
         private const val HEALTHY_AFTER_MS = 10_000L
         private const val MAX_DRAWABLE_LEVEL = 10_000
+
+        /** Per process: the prompt comes back after a reboot until the service is on. */
+        private var homeButtonPrompted = false
     }
 }

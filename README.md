@@ -58,6 +58,18 @@ Puis, la box étant en mode débogage :
 Le détail (activation du débogage, attribution du rôle « écran d'accueil »,
 récupération en cas de problème) est dans **[docs/INSTALLATION.md](docs/INSTALLATION.md)**.
 
+## Bouton Accueil de la télécommande (Player Free)
+
+Sur le Player Free, Android TV ne laisse pas choisir l'écran d'accueil : le
+bouton Accueil reste lié au lanceur d'origine. Sans ordinateur, activez le
+service fourni : **Paramètres → Préférences de l'appareil → Accessibilité →
+TV Luncher : bouton Accueil → Activer**. Dès que le lanceur d'origine passe au
+premier plan, TV Luncher s'affiche à sa place. Le service ne lit que le nom de
+l'application au premier plan : ni le contenu de l'écran, ni la saisie.
+
+Avec un ordinateur, `./scripts/tv-tune.sh` désactive le lanceur d'origine et
+rend ce service inutile.
+
 ## Supprimer les publicités
 
 Le lanceur lui-même n'affiche rien de sponsorisé. Les bandeaux publicitaires que

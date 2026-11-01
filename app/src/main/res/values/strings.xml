@@ -116,4 +116,12 @@
     <string name="weather_rain">Pluie</string>
     <string name="weather_snow">Neige</string>
     <string name="weather_storm">Orage</string>
+    <string name="home_button_service_label">TV Luncher : bouton Accueil</string>
+    <string name="home_button_service_description">Ouvre TV Luncher quand vous appuyez sur le bouton Accueil de la télécommande. Le service voit seulement quelle application passe au premier plan : jamais le contenu de l\'écran, ni ce que vous tapez.</string>
+    <string name="settings_home_button">Bouton Accueil de la télécommande</string>
+    <string name="settings_home_button_on">Actif : le bouton Accueil ouvre TV Luncher.</string>
+    <string name="settings_home_button_off">Inactif. Ouvrez Accessibilité, choisissez « TV Luncher : bouton Accueil » et activez-le.</string>
+    <string name="home_button_prompt_title">Le bouton Accueil ouvre encore l\'ancien écran</string>
+    <string name="home_button_prompt_enable">Activer (Accessibilité → TV Luncher : bouton Accueil)</string>
+    <string name="home_button_prompt_later">Plus tard</string>
 </resources>

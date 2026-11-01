@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import fr.tvluncher.launcher.BuildConfig
+import fr.tvluncher.launcher.HomeButtonService
 import fr.tvluncher.launcher.R
 import fr.tvluncher.launcher.data.AppRepository
 import fr.tvluncher.launcher.data.GeoResult
@@ -77,6 +78,8 @@ class SettingsActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        // Coming back from Accessibility: the HOME button row must show the new state.
+        rebuild()
         loadWallpaper()
     }
 
@@ -176,6 +179,21 @@ class SettingsActivity : AppCompatActivity() {
             )
 
             add(SettingRow.Header(getString(R.string.settings_section_system)))
+            if (!isDefaultHome()) {
+                add(
+                    SettingRow.Action(
+                        title = getString(R.string.settings_home_button),
+                        summary = getString(
+                            if (HomeButtonService.isEnabled(this@SettingsActivity)) {
+                                R.string.settings_home_button_on
+                            } else {
+                                R.string.settings_home_button_off
+                            }
+                        ),
+                        icon = R.drawable.ic_home,
+                    ) { Launch.accessibilitySettings(this@SettingsActivity) }
+                )
+            }
             add(
                 SettingRow.Action(
                     title = getString(R.string.settings_default_launcher),
@@ -351,15 +369,7 @@ class SettingsActivity : AppCompatActivity() {
         query.requestFocus()
     }
 
-    /** True when this app currently owns the home role. */
-    private fun isDefaultHome(): Boolean {
-        val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
-        val resolved = packageManager.resolveActivity(
-            intent,
-            android.content.pm.PackageManager.MATCH_DEFAULT_ONLY,
-        )
-        return resolved?.activityInfo?.packageName == packageName
-    }
+    private fun isDefaultHome(): Boolean = HomeButtonService.isDefaultHome(this)
 
     companion object {
         private const val SEARCH_DEBOUNCE_MS = 350L
