@@ -23,7 +23,7 @@ import org.json.JSONObject
 data class Release(val versionCode: Long, val versionName: String)
 
 /**
- * Self-update from the repository's rolling "apk" release.
+ * Self-update from the repository's latest GitHub release.
  *
  * CI publishes the APK and a version.json next to it. The launcher checks that
  * file at most every few hours, downloads the APK over HTTPS when it is newer,
@@ -34,7 +34,7 @@ data class Release(val versionCode: Long, val versionName: String)
 object Updater {
 
     private const val TAG = "Updater"
-    private const val BASE = "https://github.com/DestroyerFAC/tvluncher/releases/download/apk/"
+    private const val BASE = "https://github.com/DestroyerFAC/tvluncher/releases/latest/download/"
     private const val VERSION_URL = BASE + "version.json"
     private const val APK_URL = BASE + "tvluncher.apk"
     private const val CHECK_INTERVAL_MS = 6L * 60 * 60 * 1000

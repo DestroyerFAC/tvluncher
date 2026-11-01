@@ -9,6 +9,11 @@ on:
 permissions:
   contents: write
 
+# Two pushes in a row must not race each other while publishing.
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -49,18 +54,23 @@ jobs:
             app/build/outputs/apk/release/*.apk
           if-no-files-found: error
 
-      # A fixed, public URL lets the box fetch the APK itself (e.g. with the
-      # Downloader app), so no computer and no ADB client are needed. The tag
-      # is recreated on each push so the URL always serves the latest build.
-      - name: Publish rolling "apk" release
+      # A fixed, public URL lets the box fetch the APK itself (Downloader, or the
+      # in-app updater): releases/latest/download/<file> always serves the newest
+      # release. Each build gets its own tag, because GitHub refuses to reuse a
+      # tag once its release has been published; only the last few are kept.
+      - name: Publish release
         if: github.event_name != 'pull_request' && github.ref_name == github.event.repository.default_branch
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           cp app/build/outputs/apk/release/app-release.apk tvluncher.apk
           printf '{"versionCode":%d,"versionName":"1.2.%d"}\n' "$VERSION_CODE" "$VERSION_CODE" > version.json
-          gh release delete apk --yes --cleanup-tag || true
-          gh release create apk tvluncher.apk version.json \
+          gh release create "build-$VERSION_CODE" tvluncher.apk version.json \
             --target "$GITHUB_SHA" \
-            --title "TV Luncher (dernière version)" \
-            --notes "APK construit automatiquement depuis ${GITHUB_SHA::7}. Lien direct : https://github.com/${GITHUB_REPOSITORY}/releases/download/apk/tvluncher.apk"
+            --latest \
+            --title "TV Luncher 1.2.$VERSION_CODE" \
+            --notes "APK construit automatiquement depuis ${GITHUB_SHA::7}. Lien direct : https://github.com/${GITHUB_REPOSITORY}/releases/latest/download/tvluncher.apk"
+          # Keep the three newest builds; older ones only take space.
+          gh release list --limit 100 --json tagName --jq '.[].tagName' \
+            | grep '^build-' | tail -n +4 \
+            | xargs -r -n1 gh release delete --yes --cleanup-tag || true

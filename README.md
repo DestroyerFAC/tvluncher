@@ -38,7 +38,7 @@ Le dépôt ne contient pas d'APK. Deux façons d'en obtenir un :
 applications, puis saisissez :
 
 ```
-github.com/DestroyerFAC/tvluncher/releases/download/apk/tvluncher.apk
+github.com/DestroyerFAC/tvluncher/releases/latest/download/tvluncher.apk
 ```
 
 Ce lien sert toujours la dernière version construite par GitHub Actions.
