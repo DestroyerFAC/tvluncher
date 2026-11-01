@@ -56,7 +56,11 @@ class AppRepository private constructor(private val context: Context) {
         fun collect(category: String, leanback: Boolean) {
             val intent = Intent(Intent.ACTION_MAIN).addCategory(category)
             val resolved: List<ResolveInfo> = try {
-                pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+                // No MATCH_DEFAULT_ONLY: it keeps only activities that also
+                // declare CATEGORY_DEFAULT, which launcher entries need not do.
+                // Preinstalled apps on the Free Player (OQEE, Netflix, Prime
+                // Video) do not, and were missing from the launcher entirely.
+                pm.queryIntentActivities(intent, 0)
             } catch (e: Exception) {
                 // A broken package can make the whole query throw. Losing one
                 // category is survivable; crashing the home screen is not.

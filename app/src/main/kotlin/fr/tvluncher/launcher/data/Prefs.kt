@@ -254,7 +254,8 @@ class Prefs private constructor(private val context: Context) {
         private const val KEY_CURRENT_PROFILE = "current_profile"
         private const val KEY_FAVOURITES = "favourites"
         private const val KEY_HIDDEN = "hidden"
-        private const val KEY_DOCK_STREAMING = "dock_streaming"
+        // v2: the first pass ran while preinstalled apps were still undiscovered.
+        private const val KEY_DOCK_STREAMING = "dock_streaming_v2"
         private const val KEY_WALLPAPER = "wallpaper"
         private const val KEY_WALLPAPER_PATH = "wallpaper_path"
         private const val KEY_SHOW_PILL = "show_pill"

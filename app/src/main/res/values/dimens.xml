@@ -19,7 +19,7 @@
     <!-- Home grid: five 16:9 columns across a 960dp-wide TV screen. -->
     <dimen name="home_grid_tile_width">152dp</dimen>
     <dimen name="home_grid_tile_height">86dp</dimen>
-    <dimen name="home_grid_margin">36dp</dimen>
+    <dimen name="home_grid_margin">48dp</dimen>
     <!-- How much of the grid shows under the dock: its title and the top of the
          first row, so it is obvious there is more below. -->
     <dimen name="home_grid_peek">70dp</dimen>

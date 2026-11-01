@@ -12,7 +12,7 @@ object DockSeeder {
 
     /** In dock order. Lower-case, accent-free, as [AppInfo.sortKey] is. */
     private val STREAMING = listOf(
-        "oqee", "netflix", "prime video", "youtube", "disney", "canal",
+        "oqee", "free tv", "tv by free", "freebox", "netflix", "prime video", "youtube", "disney", "canal",
         "apple tv", "max", "paramount", "france.tv", "tf1", "m6",
         "molotov", "arte", "plex", "spotify", "deezer", "twitch",
     )
