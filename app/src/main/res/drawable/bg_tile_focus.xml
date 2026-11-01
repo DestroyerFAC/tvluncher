@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Drawn as a foreground so the ring sits above the artwork, never behind it. -->
+<!-- Drawn as a foreground so the sheen sits above the artwork. tvOS marks focus
+     with lift and a light reflection, not an outline. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true">
         <shape android:shape="rectangle">
             <corners android:radius="@dimen/tile_radius" />
-            <stroke android:width="3dp" android:color="@color/focus_ring" />
+            <gradient
+                android:type="linear"
+                android:angle="270"
+                android:startColor="#38FFFFFF"
+                android:centerColor="#0AFFFFFF"
+                android:endColor="#00FFFFFF" />
         </shape>
     </item>
     <item>

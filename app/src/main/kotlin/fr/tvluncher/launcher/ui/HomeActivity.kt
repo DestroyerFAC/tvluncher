@@ -7,14 +7,18 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.KeyEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.DecelerateInterpolator
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.doOnLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import fr.tvluncher.launcher.HomeButtonService
 import fr.tvluncher.launcher.R
@@ -65,6 +69,17 @@ class HomeActivity : AppCompatActivity() {
     /** Cached so the tile menu can act on positions without re-reading prefs. */
     private var favouriteApps: List<AppInfo> = emptyList()
 
+    private lateinit var gridAdapter: AppTileAdapter
+    /** Everything installed that is not on the dock and not hidden. */
+    private var gridApps: List<AppInfo> = emptyList()
+
+    /** True while the grid has slid up over the picture. */
+    private var gridMode = false
+    /** Grid translationY while it rests under the dock, peeking. Known after layout. */
+    private var gridRestY = 0f
+    /** Dock tile to return to when leaving the grid. */
+    private var lastDockPosition = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
@@ -78,6 +93,7 @@ class HomeActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         setUpRow()
+        setUpGrid()
         setUpPill()
         setUpButtons()
         setUpQuickPanel()
@@ -89,6 +105,10 @@ class HomeActivity : AppCompatActivity() {
             override fun handleOnBackPressed() {
                 if (uiHidden) {
                     setUiHidden(false)
+                    return
+                }
+                if (gridMode) {
+                    exitGrid()
                     return
                 }
                 binding.favouritesRow.scrollToPosition(0)
@@ -109,6 +129,7 @@ class HomeActivity : AppCompatActivity() {
             scope = lifecycleScope,
             animations = { prefs.animationsEnabled },
             showLabels = { prefs.showLabels },
+            labelOnFocus = { true },
             onClick = { app -> Launch.app(this, app) },
             onLongClick = { app -> showTileMenu(app) },
         )
@@ -123,6 +144,127 @@ class HomeActivity : AppCompatActivity() {
         // change animation would only fight the focus animation for frames.
         row.itemAnimator = null
         row.adapter = adapter
+    }
+
+    /**
+     * The tvOS layout: the dock is the top row, every other app sits in a grid
+     * below it with its first row peeking. Down from the dock slides the whole
+     * screen up; up from the grid's first row slides it back.
+     *
+     * The grid is laid out at the top of the screen and placed with translationY
+     * alone, so the slide never triggers a layout pass. Because focus search
+     * ignores translation, crossing between dock and grid is handled explicitly
+     * in [dispatchKeyEvent], and whichever side is off screen has its focus
+     * blocked so the d-pad can never land on something invisible.
+     */
+    private fun setUpGrid() {
+        gridAdapter = AppTileAdapter(
+            layoutRes = R.layout.item_home_grid,
+            scope = lifecycleScope,
+            animations = { prefs.animationsEnabled },
+            showLabels = { prefs.showLabels },
+            labelOnFocus = { true },
+            onClick = { app -> Launch.app(this, app) },
+            onLongClick = { app -> showGridMenu(app) },
+        )
+        val grid = binding.homeGrid
+        grid.layoutManager = GridLayoutManager(this, GRID_COLUMNS)
+        grid.setHasFixedSize(true)
+        grid.itemAnimator = null
+        grid.setItemViewCacheSize(GRID_COLUMNS * 2)
+        grid.adapter = gridAdapter
+
+        binding.root.doOnLayout { root ->
+            val top = resources.getDimensionPixelSize(R.dimen.home_grid_top)
+            val peek = resources.getDimensionPixelSize(R.dimen.home_grid_peek)
+            grid.layoutParams = grid.layoutParams.apply { height = root.height - top }
+            gridRestY = (root.height - peek).toFloat()
+            setGridMode(gridMode, animate = false)
+        }
+    }
+
+    private fun setGridMode(on: Boolean, animate: Boolean = prefs.animationsEnabled) {
+        gridMode = on
+        binding.homeGrid.descendantFocusability =
+            if (on) ViewGroup.FOCUS_AFTER_DESCENDANTS else ViewGroup.FOCUS_BLOCK_DESCENDANTS
+        val shelfFocus = if (on) ViewGroup.FOCUS_BLOCK_DESCENDANTS else ViewGroup.FOCUS_AFTER_DESCENDANTS
+        binding.favouritesRow.descendantFocusability = shelfFocus
+        binding.quickPanel.descendantFocusability = shelfFocus
+
+        val top = resources.getDimensionPixelSize(R.dimen.home_grid_top).toFloat()
+        val shelfY = if (on) -(gridRestY - top) else 0f
+        listOf(binding.clockBlock, binding.quickPanel, binding.artCredit, binding.rowContainer)
+            .forEach { slide(it, shelfY, animate) }
+        slide(binding.homeGrid, if (on) top else gridRestY, animate)
+
+        val dim = if (on) GRID_DIM else 0f
+        binding.dimLayer.animate().cancel()
+        if (animate) {
+            binding.dimLayer.animate().alpha(dim).setDuration(SLIDE_MS).start()
+        } else {
+            binding.dimLayer.alpha = dim
+        }
+    }
+
+    private fun slide(view: View, y: Float, animate: Boolean) {
+        view.animate().cancel()
+        if (animate) {
+            view.animate().translationY(y).setDuration(SLIDE_MS)
+                .setInterpolator(SLIDE_INTERPOLATOR).start()
+        } else {
+            view.translationY = y
+        }
+    }
+
+    private fun enterGrid(from: View) {
+        if (gridApps.isEmpty()) return
+        lastDockPosition = binding.favouritesRow.findContainingViewHolder(from)
+            ?.bindingAdapterPosition?.takeIf { it != RecyclerView.NO_POSITION } ?: 0
+
+        // Land in the column under the tile we came from, like tvOS.
+        val fromX = IntArray(2).also { from.getLocationOnScreen(it) }[0] + from.width / 2
+        val gridX = IntArray(2).also { binding.homeGrid.getLocationOnScreen(it) }[0]
+        val cell = (binding.homeGrid.width / GRID_COLUMNS).coerceAtLeast(1)
+        val column = ((fromX - gridX) / cell).coerceIn(0, GRID_COLUMNS - 1)
+        val target = column.coerceAtMost(gridApps.lastIndex)
+
+        setGridMode(true)
+        binding.homeGrid.scrollToPosition(0)
+        binding.homeGrid.post {
+            binding.homeGrid.findViewHolderForAdapterPosition(target)?.itemView?.requestFocus()
+        }
+    }
+
+    private fun exitGrid() {
+        setGridMode(false)
+        binding.homeGrid.scrollToPosition(0)
+        binding.favouritesRow.post {
+            val holder = binding.favouritesRow.findViewHolderForAdapterPosition(lastDockPosition)
+            if (holder != null) holder.itemView.requestFocus() else focusFirstTile()
+        }
+    }
+
+    private fun showGridMenu(app: AppInfo) {
+        val items = buildList {
+            add(Sheet.Item(getString(R.string.action_open), R.drawable.ic_open) {
+                Launch.app(this@HomeActivity, app)
+            })
+            add(Sheet.Item(getString(R.string.action_add_favourite), R.drawable.ic_star) {
+                prefs.addFavourite(app.id)
+            })
+            add(Sheet.Item(getString(R.string.action_hide), R.drawable.ic_hide) {
+                prefs.toggleHidden(app.packageName)
+            })
+            add(Sheet.Item(getString(R.string.action_app_info), R.drawable.ic_info) {
+                Launch.appDetails(this@HomeActivity, app.packageName)
+            })
+            if (!app.isSystem) {
+                add(Sheet.Item(getString(R.string.action_uninstall), R.drawable.ic_delete) {
+                    Launch.uninstall(this@HomeActivity, app.packageName)
+                })
+            }
+        }
+        Sheet.show(this, app.label, app.packageName, items)
     }
 
     private fun setUpPill() {
@@ -179,6 +321,7 @@ class HomeActivity : AppCompatActivity() {
             prefs.showLabels = !prefs.showLabels
             // Same list, different look: submitList alone would not rebind.
             adapter.notifyItemRangeChanged(0, adapter.itemCount)
+            gridAdapter.notifyItemRangeChanged(0, gridAdapter.itemCount)
             // The row has a fixed size for d-pad speed; its height changes here.
             binding.favouritesRow.requestLayout()
         }
@@ -273,6 +416,7 @@ class HomeActivity : AppCompatActivity() {
             ?: Build.MODEL
 
     private fun setUiHidden(hidden: Boolean) {
+        if (hidden && gridMode) setGridMode(false, animate = false)
         uiHidden = hidden
         val visibility = if (hidden) View.GONE else View.VISIBLE
         binding.clockBlock.visibility = visibility
@@ -280,6 +424,7 @@ class HomeActivity : AppCompatActivity() {
         binding.scrimTop.visibility = visibility
         binding.scrim.visibility = visibility
         binding.quickPanel.visibility = visibility
+        binding.homeGrid.visibility = if (hidden || gridApps.isEmpty()) View.GONE else View.VISIBLE
         binding.hiddenHint.visibility = if (hidden) View.VISIBLE else View.GONE
         if (!hidden) focusFirstTile()
     }
@@ -292,6 +437,22 @@ class HomeActivity : AppCompatActivity() {
         ) {
             setUiHidden(false)
             return true
+        }
+        if (event.action == KeyEvent.ACTION_DOWN) {
+            val focused = currentFocus
+            if (focused != null && event.keyCode == KeyEvent.KEYCODE_DPAD_DOWN && !gridMode &&
+                binding.favouritesRow.findContainingItemView(focused) != null && gridApps.isNotEmpty()
+            ) {
+                enterGrid(focused)
+                return true
+            }
+            if (focused != null && event.keyCode == KeyEvent.KEYCODE_DPAD_UP && gridMode) {
+                val position = binding.homeGrid.findContainingViewHolder(focused)?.bindingAdapterPosition
+                if (position != null && position in 0 until GRID_COLUMNS) {
+                    exitGrid()
+                    return true
+                }
+            }
         }
         return super.dispatchKeyEvent(event)
     }
@@ -316,6 +477,26 @@ class HomeActivity : AppCompatActivity() {
             if (binding.favouritesRow.findFocus() == null && currentFocus == null) {
                 focusFirstTile()
             }
+        }
+
+        val onDock = favouriteApps.map { it.id }.toSet()
+        val hidden = prefs.hidden
+        gridApps = apps.filter {
+            it.id !in onDock && it.packageName !in hidden && it.packageName != packageName
+        }
+        gridAdapter.favourites = onDock
+        gridAdapter.submitList(gridApps) {
+            // The focused app may just have moved to the dock or been hidden.
+            if (gridMode && currentFocus == null) {
+                if (gridApps.isEmpty()) {
+                    exitGrid()
+                } else {
+                    binding.homeGrid.findViewHolderForAdapterPosition(0)?.itemView?.requestFocus()
+                }
+            }
+        }
+        if (!uiHidden) {
+            binding.homeGrid.visibility = if (gridApps.isEmpty()) View.GONE else View.VISIBLE
         }
 
         val empty = favouriteApps.isEmpty()
@@ -468,6 +649,8 @@ class HomeActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         if (uiHidden) setUiHidden(false)
+        if (gridMode) setGridMode(false)
+        binding.homeGrid.scrollToPosition(0)
         binding.favouritesRow.stopScroll()
         binding.favouritesRow.scrollToPosition(0)
         focusFirstTile()
@@ -478,6 +661,11 @@ class HomeActivity : AppCompatActivity() {
         // whatever tile is focused.
         if (keyCode == KeyEvent.KEYCODE_MENU) {
             val focused = currentFocus ?: return super.onKeyDown(keyCode, event)
+            val gridPosition = binding.homeGrid.findContainingViewHolder(focused)?.bindingAdapterPosition
+            if (gridPosition != null && gridPosition in gridApps.indices) {
+                showGridMenu(gridApps[gridPosition])
+                return true
+            }
             val position = binding.favouritesRow.findContainingViewHolder(focused)
                 ?.bindingAdapterPosition
                 ?: return super.onKeyDown(keyCode, event)
@@ -493,6 +681,10 @@ class HomeActivity : AppCompatActivity() {
         private const val SEED_FAVOURITE_COUNT = 6
         private const val HEALTHY_AFTER_MS = 10_000L
         private const val MAX_DRAWABLE_LEVEL = 10_000
+        private const val GRID_COLUMNS = 5
+        private const val GRID_DIM = 0.6f
+        private const val SLIDE_MS = 320L
+        private val SLIDE_INTERPOLATOR = DecelerateInterpolator(2f)
 
         /** Per process: the prompt comes back after a reboot until the service is on. */
         private var homeButtonPrompted = false

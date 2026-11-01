@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A tile of the home grid under the dock: the same 16:9 tile as the dock, a
+     little larger, with its name shown only while focused. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tileRoot"
+    android:layout_width="@dimen/home_grid_tile_width"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="6dp"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:focusable="true"
+    android:clickable="true"
+    android:clipChildren="false">
+
+    <FrameLayout
+        android:id="@+id/tile"
+        android:layout_width="@dimen/home_grid_tile_width"
+        android:layout_height="@dimen/home_grid_tile_height"
+        android:background="@drawable/bg_tile"
+        android:foreground="@drawable/bg_tile_focus"
+        android:duplicateParentState="true">
+
+        <ImageView
+            android:id="@+id/artwork"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+        <ImageView
+            android:id="@+id/favouriteBadge"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="top|end"
+            android:layout_margin="6dp"
+            android:src="@drawable/ic_star"
+            android:visibility="gone"
+            android:importantForAccessibility="no" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/row_label_height"
+        android:layout_marginTop="8dp"
+        style="@style/TextAppearance.Tile"
+        android:textColor="@color/text_primary" />
+</LinearLayout>

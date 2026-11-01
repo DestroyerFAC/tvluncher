@@ -32,6 +32,8 @@ class AppTileAdapter(
     private val scope: CoroutineScope,
     private val animations: () -> Boolean,
     private val showLabels: () -> Boolean,
+    /** When labels are off, still name the focused tile, as tvOS does. */
+    private val labelOnFocus: () -> Boolean = { false },
     private val onClick: (AppInfo) -> Unit,
     private val onLongClick: (AppInfo) -> Unit,
 ) : ListAdapter<AppInfo, AppTileAdapter.Holder>(DIFF) {
@@ -80,7 +82,12 @@ class AppTileAdapter(
         private var loadJob: Job? = null
 
         init {
-            FocusEffects.bind(itemView, animate = animations)
+            FocusEffects.bind(itemView, animate = animations) { focused ->
+                if (!showLabels() && labelOnFocus()) {
+                    label.animate().cancel()
+                    label.animate().alpha(if (focused) 1f else 0f).setDuration(LABEL_FADE_MS).start()
+                }
+            }
             itemView.setOnClickListener {
                 currentItem()?.let(onClick)
             }
@@ -97,7 +104,18 @@ class AppTileAdapter(
             loadJob?.cancel()
 
             label.text = app.label
-            label.visibility = if (showLabels()) View.VISIBLE else View.GONE
+            when {
+                showLabels() -> {
+                    label.visibility = View.VISIBLE
+                    label.alpha = 1f
+                }
+                // Space stays reserved so the row never jumps as focus moves.
+                labelOnFocus() -> {
+                    label.visibility = View.VISIBLE
+                    label.alpha = if (itemView.isFocused) 1f else 0f
+                }
+                else -> label.visibility = View.GONE
+            }
             itemView.contentDescription = app.label
             bindFavourite(app)
 
@@ -148,6 +166,7 @@ class AppTileAdapter(
 
     companion object {
         private const val PAYLOAD_FAVOURITE = "favourite"
+        private const val LABEL_FADE_MS = 140L
 
         private val DIFF = object : DiffUtil.ItemCallback<AppInfo>() {
             override fun areItemsTheSame(old: AppInfo, new: AppInfo) = old.id == new.id

@@ -30,10 +30,16 @@ object FocusEffects {
      * They are usually the same view; passing a child lets a tile keep its focus
      * highlight while an outer container handles clipping.
      */
-    fun bind(view: View, target: View = view, animate: () -> Boolean = { true }) {
+    fun bind(
+        view: View,
+        target: View = view,
+        animate: () -> Boolean = { true },
+        onChange: ((Boolean) -> Unit)? = null,
+    ) {
         applyImmediately(target, view.isFocused)
         view.setOnFocusChangeListener { _, hasFocus ->
             apply(target, hasFocus, animate())
+            onChange?.invoke(hasFocus)
         }
     }
 

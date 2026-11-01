@@ -98,7 +98,7 @@
     <string name="pill_weather">Weather</string>
     <string name="pill_labels">App names</string>
     <string name="pill_labels_shown">Shown</string>
-    <string name="pill_labels_hidden">Hidden</string>
+    <string name="pill_labels_hidden">Focused</string>
     <string name="settings_background">Home background</string>
     <string name="settings_background_summary">One freely licensed image a day: paintings (Art Institute of Chicago), nature or space photos (Wikimedia Commons). Classic: the wallpaper below.</string>
     <string name="weather_line">%1$d° %2$s</string>

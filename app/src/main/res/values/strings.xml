@@ -105,7 +105,7 @@
     <string name="pill_weather">Météo</string>
     <string name="pill_labels">Noms des apps</string>
     <string name="pill_labels_shown">Affichés</string>
-    <string name="pill_labels_hidden">Masqués</string>
+    <string name="pill_labels_hidden">Sélection</string>
     <string name="settings_background">Fond d\'accueil</string>
     <string name="settings_background_summary">Une image libre de droits par jour : tableaux (Art Institute of Chicago), photos de nature ou d\'espace (Wikimedia Commons). Classique : le fond d\'écran ci-dessous.</string>
     <string name="weather_line">%1$d° %2$s</string>

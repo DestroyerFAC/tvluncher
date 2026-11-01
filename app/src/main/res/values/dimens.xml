@@ -16,6 +16,15 @@
     <dimen name="grid_tile_width">184dp</dimen>
     <dimen name="grid_tile_height">104dp</dimen>
 
+    <!-- Home grid: five 16:9 columns across a 960dp-wide TV screen. -->
+    <dimen name="home_grid_tile_width">152dp</dimen>
+    <dimen name="home_grid_tile_height">86dp</dimen>
+    <dimen name="home_grid_margin">36dp</dimen>
+    <!-- How much of the grid shows under the dock, hinting there is more below. -->
+    <dimen name="home_grid_peek">30dp</dimen>
+    <!-- Where the grid settles once it has slid up. -->
+    <dimen name="home_grid_top">36dp</dimen>
+
     <dimen name="pill_height">52dp</dimen>
     <dimen name="pill_radius">26dp</dimen>
     <dimen name="pill_button">44dp</dimen>

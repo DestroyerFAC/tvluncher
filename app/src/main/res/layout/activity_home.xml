@@ -42,6 +42,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Darkens the picture while the app grid is up, as tvOS does. -->
+    <View
+        android:id="@+id/dimLayer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        android:alpha="0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <!-- Clock, date, weather -->
     <LinearLayout
         android:id="@+id/clockBlock"
@@ -357,6 +369,26 @@
             android:shadowColor="#99000000"
             android:shadowRadius="6" />
     </LinearLayout>
+
+    <!-- Every other app, under the dock. Laid out at the top of the screen and
+         moved with translationY only (see HomeActivity), so sliding it up is a
+         render-thread animation, never a relayout. Declared before the dock so
+         the dock draws over the peeking first row. -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/homeGrid"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/home_grid_margin"
+        android:layout_marginEnd="@dimen/home_grid_margin"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingTop="14dp"
+        android:paddingBottom="24dp"
+        android:descendantFocusability="blocksDescendants"
+        android:scrollbars="none"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Dock -->
     <FrameLayout
