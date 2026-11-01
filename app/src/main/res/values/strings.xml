@@ -103,9 +103,6 @@
     <string name="pill_clock_24">24 heures</string>
     <string name="pill_clock_12">12 heures</string>
     <string name="pill_weather">Météo</string>
-    <string name="pill_labels">Noms des apps</string>
-    <string name="pill_labels_shown">Affichés</string>
-    <string name="pill_labels_hidden">Sélection</string>
     <string name="settings_background">Fond d\'accueil</string>
     <string name="settings_background_summary">Une image libre de droits par jour : tableaux (Art Institute of Chicago), photos de nature ou d\'espace (Wikimedia Commons). Classique : le fond d\'écran ci-dessous.</string>
     <string name="weather_line">%1$d° %2$s</string>
@@ -132,4 +129,21 @@
     <string name="update_failed">La mise à jour a échoué. Réessayez plus tard.</string>
     <string name="update_none">TV Luncher est à jour.</string>
     <string name="settings_check_update">Rechercher une mise à jour</string>
+    <string name="profile_default_name">Maison</string>
+    <string name="profile_new_name">Profil %1$d</string>
+    <string name="profiles_title">Qui regarde ?</string>
+    <string name="profiles_hint">Appui long ou touche Menu sur un profil pour le modifier</string>
+    <string name="profiles_add">Ajouter</string>
+    <string name="profile_current">Actuel</string>
+    <string name="profile_apps">Applications visibles</string>
+    <string name="profile_apps_hint">Décochez les applications que ce profil ne doit pas voir.</string>
+    <string name="profile_rename">Renommer</string>
+    <string name="profile_name_hint">Prénom</string>
+    <string name="profile_color">Changer de couleur</string>
+    <string name="profile_delete">Supprimer le profil</string>
+    <string name="profile_delete_confirm">Supprimer « %1$s » ?</string>
+    <string name="cancel">Annuler</string>
+    <string name="ok">OK</string>
+    <string name="pill_profile">Profil</string>
+    <string name="home_all_apps">Toutes les applications</string>
 </resources>

@@ -2,9 +2,7 @@ package fr.tvluncher.launcher.ui
 
 import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +16,7 @@ import androidx.core.view.doOnLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import fr.tvluncher.launcher.HomeButtonService
@@ -170,11 +169,18 @@ class HomeActivity : AppCompatActivity() {
             onLongClick = { app -> showGridMenu(app) },
         )
         val grid = binding.homeGrid
-        grid.layoutManager = GridLayoutManager(this, GRID_COLUMNS)
+        grid.layoutManager = GridLayoutManager(this, GRID_COLUMNS).apply {
+            // The title spans the row; apps take one cell each.
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int) = if (position == 0) GRID_COLUMNS else 1
+            }
+        }
         grid.setHasFixedSize(true)
         grid.itemAnimator = null
         grid.setItemViewCacheSize(GRID_COLUMNS * 2)
-        grid.adapter = gridAdapter
+        // Positions inside the grid adapter stay 0-based (bindingAdapterPosition);
+        // only absolute lookups on the RecyclerView add GRID_HEADER.
+        grid.adapter = ConcatAdapter(GridHeaderAdapter(), gridAdapter)
 
         binding.root.doOnLayout { root ->
             val top = resources.getDimensionPixelSize(R.dimen.home_grid_top)
@@ -233,7 +239,7 @@ class HomeActivity : AppCompatActivity() {
         setGridMode(true)
         binding.homeGrid.scrollToPosition(0)
         binding.homeGrid.post {
-            binding.homeGrid.findViewHolderForAdapterPosition(target)?.itemView?.requestFocus()
+            binding.homeGrid.findViewHolderForAdapterPosition(target + GRID_HEADER)?.itemView?.requestFocus()
         }
     }
 
@@ -319,13 +325,8 @@ class HomeActivity : AppCompatActivity() {
                 statusPill?.refreshWeather()
             }
         }
-        binding.pillLabels.setUp(R.drawable.ic_title, R.string.pill_labels) {
-            prefs.showLabels = !prefs.showLabels
-            // Same list, different look: submitList alone would not rebind.
-            adapter.notifyItemRangeChanged(0, adapter.itemCount)
-            gridAdapter.notifyItemRangeChanged(0, gridAdapter.itemCount)
-            // The row has a fixed size for d-pad speed; its height changes here.
-            binding.favouritesRow.requestLayout()
+        binding.pillProfile.setUp(R.drawable.ic_person, R.string.pill_profile) {
+            startActivity(Intent(this, ProfilesActivity::class.java))
         }
 
         volume = Volume(this)
@@ -345,7 +346,6 @@ class HomeActivity : AppCompatActivity() {
             renderVolume()
         }
 
-        binding.deviceName.text = deviceName()
     }
 
     /** Paintings → Nature → Space → Mix → Classic → Paintings. */
@@ -388,9 +388,7 @@ class HomeActivity : AppCompatActivity() {
             prefs.weatherEnabled -> prefs.weatherCity
             else -> getString(R.string.off)
         }
-        binding.pillLabels.value.setText(
-            if (prefs.showLabels) R.string.pill_labels_shown else R.string.pill_labels_hidden
-        )
+        binding.pillProfile.value.text = prefs.currentProfile.name
 
         // Classic keeps only the first row (all apps, settings) so both stay reachable.
         val gallery = prefs.galleryStyle
@@ -411,11 +409,6 @@ class HomeActivity : AppCompatActivity() {
         binding.volumeValue.text = level.toString()
         binding.volumeFill.background.setLevel(level * MAX_DRAWABLE_LEVEL / max)
     }
-
-    /** The name the user gave the box ("Player TV Free"), else its model. */
-    private fun deviceName(): String =
-        Settings.Global.getString(contentResolver, "device_name")?.takeIf { it.isNotBlank() }
-            ?: Build.MODEL
 
     private fun setUiHidden(hidden: Boolean) {
         if (hidden && gridMode) setGridMode(false, animate = false)
@@ -493,7 +486,7 @@ class HomeActivity : AppCompatActivity() {
                 if (gridApps.isEmpty()) {
                     exitGrid()
                 } else {
-                    binding.homeGrid.findViewHolderForAdapterPosition(0)?.itemView?.requestFocus()
+                    binding.homeGrid.findViewHolderForAdapterPosition(GRID_HEADER)?.itemView?.requestFocus()
                 }
             }
         }
@@ -694,6 +687,8 @@ class HomeActivity : AppCompatActivity() {
         private const val HEALTHY_AFTER_MS = 10_000L
         private const val MAX_DRAWABLE_LEVEL = 10_000
         private const val GRID_COLUMNS = 5
+        /** The "All apps" title occupies adapter position 0 of the grid. */
+        private const val GRID_HEADER = 1
         private const val GRID_DIM = 0.6f
         private const val SLIDE_MS = 320L
         private val SLIDE_INTERPOLATOR = DecelerateInterpolator(2f)
@@ -701,4 +696,17 @@ class HomeActivity : AppCompatActivity() {
         /** Per process: the prompt comes back after a reboot until the service is on. */
         private var homeButtonPrompted = false
     }
+}
+
+/** The "All apps" title above the grid; never focusable. */
+private class GridHeaderAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
+        object : RecyclerView.ViewHolder(
+            android.view.LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_grid_header, parent, false)
+        ) {}
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) = Unit
+
+    override fun getItemCount(): Int = 1
 }

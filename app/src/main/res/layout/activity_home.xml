@@ -191,7 +191,7 @@
                 android:layout_height="0dp" />
 
             <include
-                android:id="@+id/pillLabels"
+                android:id="@+id/pillProfile"
                 layout="@layout/view_quick_pill" />
         </LinearLayout>
 
@@ -317,17 +317,6 @@
                     android:textStyle="bold" />
             </LinearLayout>
         </FrameLayout>
-
-        <TextView
-            android:id="@+id/deviceName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:textColor="@color/text_primary"
-            android:textSize="12sp"
-            android:shadowColor="#99000000"
-            android:shadowRadius="6" />
     </LinearLayout>
 
     <!-- Museum label for the painting -->
@@ -400,7 +389,7 @@
         android:clipChildren="false"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="@dimen/dock_margin_bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">

@@ -18,6 +18,9 @@ Aucune publicité, aucun bandeau sponsorisé, aucune analyse, aucun traceur.
 - **Toutes les applications sous le dock**, comme sur tvOS : la première rangée
   de la grille dépasse sous le dock ; flèche bas, l'écran glisse vers le haut et
   la grille le remplit, flèche haut depuis la première rangée pour revenir.
+- **Profils** (« Qui regarde ? », pastille *Profil* du panneau) : chacun a son
+  nom, sa couleur, son dock et ses applications visibles. Appui long ou touche
+  Menu sur un profil pour choisir ses applications, le renommer ou le supprimer.
 - **Une rangée de favoris** en plein écran, tuiles 16:9 qui utilisent la bannière
   officielle de chaque application TV. La tuile sélectionnée grossit, se soulève
   et reste centrée pendant que la rangée défile dessous.

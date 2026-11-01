@@ -14,17 +14,77 @@ import kotlinx.coroutines.flow.onStart
  * home screen can read favourites synchronously during the first layout pass and
  * still draw a populated row on its very first frame.
  */
-class Prefs private constructor(context: Context) {
+class Prefs private constructor(private val context: Context) {
 
     private val sp: SharedPreferences =
         context.getSharedPreferences("tvluncher", Context.MODE_PRIVATE)
 
+    // --- Profiles ---------------------------------------------------------
+
+    /**
+     * Never empty: the first profile is created on demand, and keeps the
+     * pre-profile keys, so a dock arranged before profiles existed is still there.
+     */
+    var profiles: List<Profile>
+        get() = Profile.listFromJson(sp.getString(KEY_PROFILES, null)).ifEmpty {
+            listOf(Profile(Profile.DEFAULT_ID, context.getString(fr.tvluncher.launcher.R.string.profile_default_name), 0))
+        }
+        set(value) = sp.edit { putString(KEY_PROFILES, Profile.listToJson(value)) }
+
+    var currentProfileId: String
+        get() = sp.getString(KEY_CURRENT_PROFILE, null)
+            ?.takeIf { id -> profiles.any { it.id == id } }
+            ?: profiles.first().id
+        set(value) = sp.edit { putString(KEY_CURRENT_PROFILE, value) }
+
+    val currentProfile: Profile
+        get() = currentProfileId.let { id -> profiles.first { it.id == id } }
+
+    /** Adds a profile starting from a copy of the current dock, and returns it. */
+    fun addProfile(name: String): Profile {
+        val list = profiles
+        val id = "p" + System.currentTimeMillis().toString(36)
+        val profile = Profile(id, name.take(Profile.MAX_NAME), list.size % Profile.PALETTE.size)
+        favouritesFor(id, favourites)
+        profiles = list + profile
+        return profile
+    }
+
+    fun updateProfile(profile: Profile) {
+        profiles = profiles.map { if (it.id == profile.id) profile else it }
+    }
+
+    /** Removes a profile and its data. The last profile cannot be removed. */
+    fun removeProfile(id: String) {
+        val list = profiles
+        if (list.size <= 1) return
+        profiles = list.filterNot { it.id == id }
+        sp.edit {
+            remove(scoped(KEY_FAVOURITES, id))
+            remove(scoped(KEY_HIDDEN, id))
+        }
+        if (sp.getString(KEY_CURRENT_PROFILE, null) == id) currentProfileId = profiles.first().id
+    }
+
+    /** The default profile keeps the original keys; others get their own. */
+    private fun scoped(key: String, profileId: String): String =
+        if (profileId == Profile.DEFAULT_ID) key else "$key@$profileId"
+
+    private fun favouritesFor(profileId: String, value: List<String>) =
+        sp.edit { putString(scoped(KEY_FAVOURITES, profileId), value.joinIds()) }
+
+    fun hiddenFor(profileId: String): Set<String> =
+        sp.getStringSet(scoped(KEY_HIDDEN, profileId), emptySet()) ?: emptySet()
+
+    fun setHiddenFor(profileId: String, value: Set<String>) =
+        sp.edit { putStringSet(scoped(KEY_HIDDEN, profileId), value) }
+
     // --- Favourites -------------------------------------------------------
 
-    /** Ordered app ids shown on the home row. Empty means "pick a sensible default". */
+    /** Ordered app ids on the current profile's dock. Empty means "pick a sensible default". */
     var favourites: List<String>
-        get() = sp.getString(KEY_FAVOURITES, null)?.splitIds() ?: emptyList()
-        set(value) = sp.edit { putString(KEY_FAVOURITES, value.joinIds()) }
+        get() = sp.getString(scoped(KEY_FAVOURITES, currentProfileId), null)?.splitIds() ?: emptyList()
+        set(value) = favouritesFor(currentProfileId, value)
 
     fun isFavourite(id: String): Boolean = favourites.contains(id)
 
@@ -52,10 +112,10 @@ class Prefs private constructor(context: Context) {
 
     // --- Hidden apps ------------------------------------------------------
 
-    /** Packages kept out of the all-apps grid (bloatware, duplicate stores...). */
+    /** Packages the current profile does not see (bloatware, apps for someone else...). */
     var hidden: Set<String>
-        get() = sp.getStringSet(KEY_HIDDEN, emptySet()) ?: emptySet()
-        set(value) = sp.edit { putStringSet(KEY_HIDDEN, value) }
+        get() = hiddenFor(currentProfileId)
+        set(value) = setHiddenFor(currentProfileId, value)
 
     fun toggleHidden(packageName: String) {
         val current = hidden.toMutableSet()
@@ -184,6 +244,8 @@ class Prefs private constructor(context: Context) {
         // A pipe cannot occur in a package or class name, so ids round-trip safely.
         private const val SEPARATOR = "|"
 
+        private const val KEY_PROFILES = "profiles"
+        private const val KEY_CURRENT_PROFILE = "current_profile"
         private const val KEY_FAVOURITES = "favourites"
         private const val KEY_HIDDEN = "hidden"
         private const val KEY_WALLPAPER = "wallpaper"

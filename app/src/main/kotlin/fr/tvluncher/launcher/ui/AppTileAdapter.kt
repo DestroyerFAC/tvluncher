@@ -82,6 +82,9 @@ class AppTileAdapter(
         private var loadJob: Job? = null
 
         init {
+            // Clip the artwork to the rounded tile: without it a full-bleed banner
+            // paints square corners over the rounded background.
+            FocusEffects.roundedOutline(tile, itemView.resources.getDimension(R.dimen.tile_radius))
             FocusEffects.bind(itemView, animate = animations) { focused ->
                 if (!showLabels() && labelOnFocus()) {
                     label.animate().cancel()

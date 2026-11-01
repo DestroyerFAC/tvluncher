@@ -7,7 +7,7 @@
     <!-- 16:9 so an Android TV banner (320x180) fills the tile without cropping. -->
     <dimen name="tile_width">128dp</dimen>
     <dimen name="tile_height">72dp</dimen>
-    <dimen name="tile_radius">14dp</dimen>
+    <dimen name="tile_radius">16dp</dimen>
     <dimen name="tile_spacing">14dp</dimen>
     <!-- Room for the 1.12x focus scale plus its shadow, so nothing is clipped. -->
     <dimen name="row_vertical_padding">18dp</dimen>
@@ -20,8 +20,10 @@
     <dimen name="home_grid_tile_width">152dp</dimen>
     <dimen name="home_grid_tile_height">86dp</dimen>
     <dimen name="home_grid_margin">36dp</dimen>
-    <!-- How much of the grid shows under the dock, hinting there is more below. -->
-    <dimen name="home_grid_peek">30dp</dimen>
+    <!-- How much of the grid shows under the dock: its title and the top of the
+         first row, so it is obvious there is more below. -->
+    <dimen name="home_grid_peek">70dp</dimen>
+    <dimen name="dock_margin_bottom">58dp</dimen>
     <!-- Where the grid settles once it has slid up. -->
     <dimen name="home_grid_top">36dp</dimen>
 
@@ -36,7 +38,7 @@
     <dimen name="panel_width">248dp</dimen>
     <dimen name="control_height">48dp</dimen>
     <dimen name="control_small">32dp</dimen>
-    <dimen name="control_gap">10dp</dimen>
+    <dimen name="control_gap">8dp</dimen>
     <dimen name="text_pill">15sp</dimen>
     <dimen name="text_tile_label">13sp</dimen>
     <dimen name="text_title">26sp</dimen>

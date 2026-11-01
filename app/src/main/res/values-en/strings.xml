@@ -96,9 +96,6 @@
     <string name="pill_clock_24">24-hour</string>
     <string name="pill_clock_12">12-hour</string>
     <string name="pill_weather">Weather</string>
-    <string name="pill_labels">App names</string>
-    <string name="pill_labels_shown">Shown</string>
-    <string name="pill_labels_hidden">Focused</string>
     <string name="settings_background">Home background</string>
     <string name="settings_background_summary">One freely licensed image a day: paintings (Art Institute of Chicago), nature or space photos (Wikimedia Commons). Classic: the wallpaper below.</string>
     <string name="weather_line">%1$d° %2$s</string>
@@ -125,4 +122,21 @@
     <string name="update_failed">The update failed. Try again later.</string>
     <string name="update_none">TV Luncher is up to date.</string>
     <string name="settings_check_update">Check for updates</string>
+    <string name="profile_default_name">Home</string>
+    <string name="profile_new_name">Profile %1$d</string>
+    <string name="profiles_title">Who\'s watching?</string>
+    <string name="profiles_hint">Long-press or press Menu on a profile to edit it</string>
+    <string name="profiles_add">Add</string>
+    <string name="profile_current">Current</string>
+    <string name="profile_apps">Visible apps</string>
+    <string name="profile_apps_hint">Untick the apps this profile should not see.</string>
+    <string name="profile_rename">Rename</string>
+    <string name="profile_name_hint">Name</string>
+    <string name="profile_color">Change colour</string>
+    <string name="profile_delete">Delete profile</string>
+    <string name="profile_delete_confirm">Delete "%1$s"?</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="pill_profile">Profile</string>
+    <string name="home_all_apps">All apps</string>
 </resources>

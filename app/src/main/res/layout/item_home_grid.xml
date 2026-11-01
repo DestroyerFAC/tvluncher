@@ -20,6 +20,7 @@
         android:layout_height="@dimen/home_grid_tile_height"
         android:background="@drawable/bg_tile"
         android:foreground="@drawable/bg_tile_focus"
+        android:elevation="4dp"
         android:duplicateParentState="true">
 
         <ImageView
