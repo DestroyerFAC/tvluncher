@@ -69,9 +69,10 @@ récupération en cas de problème) est dans **[docs/INSTALLATION.md](docs/INSTA
 Sur le Player Free, Android TV ne laisse pas choisir l'écran d'accueil : le
 bouton Accueil reste lié au lanceur d'origine. Sans ordinateur, activez le
 service fourni : **Paramètres → Préférences de l'appareil → Accessibilité →
-TV Luncher : bouton Accueil → Activer**. Dès que le lanceur d'origine passe au
-premier plan, TV Luncher s'affiche à sa place. Le service ne lit que le nom de
-l'application au premier plan : ni le contenu de l'écran, ni la saisie.
+TV Luncher : bouton Accueil → Activer**. Un appui sur Accueil ouvre TV Luncher ; et si le lanceur d'origine passe malgré tout au
+premier plan, TV Luncher s'affiche à sa place. Le service intercepte la touche
+Accueil (et seulement elle : les autres touches passent sans être lues) ; il ne
+voit jamais le contenu de l'écran.
 
 Avec un ordinateur, `./scripts/tv-tune.sh` désactive le lanceur d'origine et
 rend ce service inutile.

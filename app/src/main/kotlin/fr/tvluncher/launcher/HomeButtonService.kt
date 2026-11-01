@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.os.SystemClock
 import android.provider.Settings
 import android.util.Log
+import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
 import fr.tvluncher.launcher.ui.HomeActivity
 
@@ -16,15 +17,37 @@ import fr.tvluncher.launcher.ui.HomeActivity
  * user pick a home app (the Free Player among them, where HOME is hard-wired to
  * the stock launcher and removing it needs ADB from a computer).
  *
- * The service only watches which app comes to the foreground. When it is another
- * home app, TV Luncher is brought up over it. It reads the package name of the
- * new window and nothing else: no window content, no text, no key events.
+ * Two mechanisms, the same ones other replacement launchers use:
+ * - the HOME key itself is intercepted through accessibility key filtering and
+ *   opens TV Luncher directly, so the stock launcher never shows;
+ * - should a HOME press bypass key filtering on some firmware, TV Luncher is
+ *   brought up as soon as another home app reaches the foreground.
+ *
+ * Every key other than HOME is returned untouched and never recorded. Window
+ * events are read for their package name only: no content, no text.
  */
 class HomeButtonService : AccessibilityService() {
 
     /** Packages that answer the HOME intent, other than us. Resolved once per connection. */
     private var otherHomes: Set<String> = emptySet()
     private var lastLaunchAt = 0L
+
+    /** Whether the HOME key-down was taken, so its key-up is handled the same way. */
+    private var homeDownConsumed = false
+
+    override fun onKeyEvent(event: KeyEvent): Boolean {
+        if (event.keyCode != KeyEvent.KEYCODE_HOME) return false
+        return when (event.action) {
+            KeyEvent.ACTION_DOWN -> {
+                // Only swallow the key if TV Luncher actually came up; otherwise
+                // let the system handle HOME so the remote is never left dead.
+                if (event.repeatCount == 0) homeDownConsumed = bringUp()
+                homeDownConsumed
+            }
+            KeyEvent.ACTION_UP -> homeDownConsumed.also { homeDownConsumed = false }
+            else -> homeDownConsumed
+        }
+    }
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -41,13 +64,17 @@ class HomeButtonService : AccessibilityService() {
         // launch is enough, and a burst would stack copies of the transition.
         val now = SystemClock.elapsedRealtime()
         if (now - lastLaunchAt < DEBOUNCE_MS) return
-        lastLaunchAt = now
+        bringUp()
+    }
 
+    private fun bringUp(): Boolean {
+        lastLaunchAt = SystemClock.elapsedRealtime()
         val intent = Intent(this, HomeActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
         // A bound accessibility service is exempt from background-launch limits.
-        runCatching { startActivity(intent) }
+        return runCatching { startActivity(intent) }
             .onFailure { Log.w(TAG, "Could not bring TV Luncher up", it) }
+            .isSuccess
     }
 
     override fun onInterrupt() = Unit

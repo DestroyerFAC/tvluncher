@@ -110,7 +110,7 @@
     <string name="weather_snow">Snow</string>
     <string name="weather_storm">Storm</string>
     <string name="home_button_service_label">TV Luncher: Home button</string>
-    <string name="home_button_service_description">Opens TV Luncher when you press the remote\'s Home button. The service only sees which app comes to the front: never what is on screen or what you type.</string>
+    <string name="home_button_service_description">Opens TV Luncher when you press the remote\'s Home button. It only intercepts the Home key; every other key passes through without being read or stored. It never sees what is on screen.</string>
     <string name="settings_home_button">Remote Home button</string>
     <string name="settings_home_button_on">On: the Home button opens TV Luncher.</string>
     <string name="settings_home_button_off">Off. Open Accessibility, pick "TV Luncher: Home button" and turn it on.</string>
