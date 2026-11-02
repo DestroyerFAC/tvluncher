@@ -85,6 +85,15 @@ class HomeActivity : AppCompatActivity() {
     /** Id of the dock app being moved with left/right, or null. */
     private var movingId: String? = null
 
+    /** The quick panel shows its controls only while focus is inside it. */
+    private var panelExpanded = false
+
+    private val idleHandler = android.os.Handler(android.os.Looper.getMainLooper())
+    private val idleHide = Runnable {
+        // Not while a dialog, the grid or a move is in progress.
+        if (hasWindowFocus() && !gridMode && movingId == null && !uiHidden) setUiHidden(true)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
@@ -134,7 +143,7 @@ class HomeActivity : AppCompatActivity() {
             scope = lifecycleScope,
             animations = { prefs.animationsEnabled },
             showLabels = { prefs.showLabels },
-            labelOnFocus = { true },
+            labelOnFocus = { false },
             onClick = { app -> Launch.app(this, app) },
             onLongClick = { app -> showTileMenu(app) },
         )
@@ -337,6 +346,16 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, ProfilesActivity::class.java))
         }
 
+        // Collapsed, the panel is just its two small buttons; reaching either with
+        // the remote unfolds the rest, leaving it folds it away again.
+        binding.root.viewTreeObserver.addOnGlobalFocusChangeListener { _, newFocus ->
+            val inside = newFocus != null && isInside(newFocus, binding.quickPanel)
+            if (inside != panelExpanded) {
+                panelExpanded = inside
+                renderQuickPanel(animate = true)
+            }
+        }
+
         volume = Volume(this)
         binding.volumePill.setOnKeyListener { _, keyCode, event ->
             if (event.action != KeyEvent.ACTION_DOWN) return@setOnKeyListener false
@@ -383,7 +402,16 @@ class HomeActivity : AppCompatActivity() {
         root.setOnClickListener { onClick() }
     }
 
-    private fun renderQuickPanel() {
+    private fun isInside(view: View, ancestor: View): Boolean {
+        var current: View? = view
+        while (current != null) {
+            if (current === ancestor) return true
+            current = current.parent as? View
+        }
+        return false
+    }
+
+    private fun renderQuickPanel(animate: Boolean = false) {
         binding.pillStyle.value.setText(
             if (prefs.galleryStyle) ImageSource.of(prefs.imageSource).labelRes
             else R.string.pill_style_classic
@@ -398,12 +426,18 @@ class HomeActivity : AppCompatActivity() {
         }
         binding.pillProfile.value.text = prefs.currentProfile.name
 
-        // Classic keeps only the first row (all apps, settings) so both stay reachable.
-        val gallery = prefs.galleryStyle
+        // Folded (or classic style): only the first row, all apps and settings.
+        val open = prefs.galleryStyle && panelExpanded
         for (i in 1 until binding.quickPanel.childCount) {
-            binding.quickPanel.getChildAt(i).visibility = if (gallery) View.VISIBLE else View.GONE
+            val child = binding.quickPanel.getChildAt(i)
+            val wasOpen = child.visibility == View.VISIBLE
+            child.visibility = if (open) View.VISIBLE else View.GONE
+            if (open && !wasOpen && animate) {
+                child.alpha = 0f
+                child.animate().alpha(1f).setDuration(PANEL_FADE_MS).start()
+            }
         }
-        if (gallery) renderVolume()
+        if (open) renderVolume()
     }
 
     private fun renderVolume() {
@@ -432,7 +466,23 @@ class HomeActivity : AppCompatActivity() {
         if (!hidden) focusFirstTile()
     }
 
+    private fun scheduleIdleHide() {
+        idleHandler.removeCallbacks(idleHide)
+        if (prefs.autoHideUi) idleHandler.postDelayed(idleHide, IDLE_HIDE_MS)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        scheduleIdleHide()
+    }
+
+    override fun onPause() {
+        idleHandler.removeCallbacks(idleHide)
+        super.onPause()
+    }
+
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        scheduleIdleHide()
         if (movingId != null && handleMoveKey(event)) return true
         // While only the painting shows, the first key press brings the UI back
         // and is not passed on, so it cannot also launch whatever had focus.
@@ -754,6 +804,8 @@ class HomeActivity : AppCompatActivity() {
         private const val HEALTHY_AFTER_MS = 10_000L
         private const val MAX_DRAWABLE_LEVEL = 10_000
         private const val GRID_COLUMNS = 5
+        private const val PANEL_FADE_MS = 150L
+        private const val IDLE_HIDE_MS = 60_000L
         /** The "All apps" title occupies adapter position 0 of the grid. */
         private const val GRID_HEADER = 1
         private const val GRID_DIM = 0.6f

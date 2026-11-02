@@ -80,6 +80,11 @@ class Prefs private constructor(private val context: Context) {
     fun setHiddenFor(profileId: String, value: Set<String>) =
         sp.edit { putStringSet(scoped(KEY_HIDDEN, profileId), value) }
 
+    /** Fade everything but the background after a minute without a key press. */
+    var autoHideUi: Boolean
+        get() = sp.getBoolean(KEY_AUTO_HIDE, true)
+        set(value) = sp.edit { putBoolean(KEY_AUTO_HIDE, value) }
+
     /** Show "Who's watching?" at boot and on waking from standby. */
     var askProfileOnWake: Boolean
         get() = sp.getBoolean(KEY_ASK_PROFILE, true)
@@ -257,6 +262,7 @@ class Prefs private constructor(private val context: Context) {
 
         private const val KEY_PROFILES = "profiles"
         private const val KEY_ASK_PROFILE = "ask_profile_on_wake"
+        private const val KEY_AUTO_HIDE = "auto_hide_ui"
         private const val KEY_CURRENT_PROFILE = "current_profile"
         private const val KEY_FAVOURITES = "favourites"
         private const val KEY_HIDDEN = "hidden"

@@ -10,7 +10,7 @@
     <dimen name="tile_radius">16dp</dimen>
     <dimen name="tile_spacing">14dp</dimen>
     <!-- Room for the 1.12x focus scale plus its shadow, so nothing is clipped. -->
-    <dimen name="row_vertical_padding">18dp</dimen>
+    <dimen name="row_vertical_padding">11dp</dimen>
     <dimen name="row_label_height">22dp</dimen>
 
     <dimen name="grid_tile_width">184dp</dimen>
@@ -23,7 +23,7 @@
     <!-- How much of the grid shows under the dock: its title and the top of the
          first row, so it is obvious there is more below. -->
     <dimen name="home_grid_peek">70dp</dimen>
-    <dimen name="dock_margin_bottom">58dp</dimen>
+    <dimen name="dock_margin_bottom">52dp</dimen>
     <!-- Where the grid settles once it has slid up. -->
     <dimen name="home_grid_top">36dp</dimen>
 
@@ -35,9 +35,9 @@
     <dimen name="text_clock_large">56sp</dimen>
     <dimen name="text_clock_sub">17sp</dimen>
 
-    <dimen name="panel_width">248dp</dimen>
-    <dimen name="control_height">48dp</dimen>
-    <dimen name="control_small">32dp</dimen>
+    <dimen name="panel_width">224dp</dimen>
+    <dimen name="control_height">42dp</dimen>
+    <dimen name="control_small">30dp</dimen>
     <dimen name="control_gap">8dp</dimen>
     <dimen name="text_pill">15sp</dimen>
     <dimen name="text_tile_label">13sp</dimen>

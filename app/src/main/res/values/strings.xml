@@ -153,4 +153,6 @@
     <string name="forecast_title">Météo · %1$s</string>
     <string name="forecast_today">Aujourd\'hui</string>
     <string name="forecast_unavailable">Prévisions indisponibles pour le moment.</string>
+    <string name="settings_auto_hide">Effacer l\'interface au repos</string>
+    <string name="settings_auto_hide_summary">Au bout d\'une minute sans toucher la télécommande, seul le fond reste affiché.</string>
 </resources>

@@ -27,7 +27,7 @@
     <View
         android:id="@+id/scrimTop"
         android:layout_width="0dp"
-        android:layout_height="220dp"
+        android:layout_height="150dp"
         android:background="@drawable/scrim_top"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +36,7 @@
     <View
         android:id="@+id/scrim"
         android:layout_width="0dp"
-        android:layout_height="260dp"
+        android:layout_height="190dp"
         android:background="@drawable/scrim_bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -208,7 +208,7 @@
                 android:background="@drawable/bg_glass_control"
                 android:src="@drawable/ic_image"
                 android:scaleType="centerInside"
-                android:padding="13dp"
+                android:padding="11dp"
                 android:contentDescription="@string/home_next_artwork"
                 app:tint="@color/glass_content" />
 
@@ -224,7 +224,7 @@
                 android:background="@drawable/bg_glass_control"
                 android:src="@drawable/ic_weather_moon"
                 android:scaleType="centerInside"
-                android:padding="13dp"
+                android:padding="11dp"
                 android:contentDescription="@string/home_screensaver_now"
                 app:tint="@color/glass_content" />
 
@@ -240,7 +240,7 @@
                 android:background="@drawable/bg_glass_control"
                 android:src="@drawable/ic_refresh"
                 android:scaleType="centerInside"
-                android:padding="13dp"
+                android:padding="11dp"
                 android:contentDescription="@string/home_refresh"
                 app:tint="@color/glass_content" />
 
@@ -256,7 +256,7 @@
                 android:background="@drawable/bg_glass_control"
                 android:src="@drawable/ic_eye"
                 android:scaleType="centerInside"
-                android:padding="13dp"
+                android:padding="11dp"
                 android:contentDescription="@string/home_hide_ui"
                 app:tint="@color/glass_content" />
         </LinearLayout>
@@ -384,7 +384,7 @@
         android:id="@+id/rowContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:minHeight="116dp"
+        android:minHeight="90dp"
         android:background="@drawable/bg_dock"
         android:clipChildren="false"
         android:layout_marginStart="@dimen/screen_margin_horizontal"

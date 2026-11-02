@@ -146,4 +146,6 @@
     <string name="forecast_title">Weather · %1$s</string>
     <string name="forecast_today">Today</string>
     <string name="forecast_unavailable">Forecast unavailable right now.</string>
+    <string name="settings_auto_hide">Fade the interface when idle</string>
+    <string name="settings_auto_hide_summary">After a minute without touching the remote, only the background stays on screen.</string>
 </resources>

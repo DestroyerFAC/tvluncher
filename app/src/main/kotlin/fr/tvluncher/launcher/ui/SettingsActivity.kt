@@ -145,6 +145,14 @@ class SettingsActivity : AppCompatActivity() {
             add(SettingRow.Header(getString(R.string.settings_section_home)))
             add(
                 SettingRow.Toggle(
+                    title = getString(R.string.settings_auto_hide),
+                    summary = getString(R.string.settings_auto_hide_summary),
+                    checked = prefs.autoHideUi,
+                    icon = R.drawable.ic_eye,
+                ) { prefs.autoHideUi = it; rebuild() }
+            )
+            add(
+                SettingRow.Toggle(
                     title = getString(R.string.settings_ask_profile),
                     summary = getString(R.string.settings_ask_profile_summary),
                     checked = prefs.askProfileOnWake,
