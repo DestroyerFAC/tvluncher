@@ -144,6 +144,14 @@ class SettingsActivity : AppCompatActivity() {
 
             add(SettingRow.Header(getString(R.string.settings_section_home)))
             add(
+                SettingRow.Toggle(
+                    title = getString(R.string.settings_ask_profile),
+                    summary = getString(R.string.settings_ask_profile_summary),
+                    checked = prefs.askProfileOnWake,
+                    icon = R.drawable.ic_person,
+                ) { prefs.askProfileOnWake = it; rebuild() }
+            )
+            add(
                 SettingRow.Action(
                     title = getString(R.string.settings_manage_favourites),
                     summary = getString(

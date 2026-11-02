@@ -139,4 +139,11 @@
     <string name="ok">OK</string>
     <string name="pill_profile">Profile</string>
     <string name="home_all_apps">All apps</string>
+    <string name="action_move">Move</string>
+    <string name="move_hint">◀ ▶ to move · OK to confirm</string>
+    <string name="settings_ask_profile">"Who\'s watching?" at start-up</string>
+    <string name="settings_ask_profile_summary">Pick the profile when the box turns on or wakes from standby (with two profiles or more).</string>
+    <string name="forecast_title">Weather · %1$s</string>
+    <string name="forecast_today">Today</string>
+    <string name="forecast_unavailable">Forecast unavailable right now.</string>
 </resources>

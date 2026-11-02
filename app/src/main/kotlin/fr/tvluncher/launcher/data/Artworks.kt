@@ -109,7 +109,9 @@ object Artworks {
     private const val TIMEOUT_MS = 10_000
     private const val MAX_IMAGE_BYTES = 8L * 1024 * 1024
     private const val MAX_JSON_BYTES = 3L * 1024 * 1024
-    private const val KEEP_IMAGES = 4
+    /** Enough for a varied screensaver slideshow, still only ~10 MB on disk. */
+    private const val KEEP_IMAGES = 12
+    private const val PREFETCH_AHEAD = 2
     private const val MAX_ATTEMPTS = 3
     private const val MAX_CREDIT_CHARS = 120
 
@@ -161,6 +163,46 @@ object Artworks {
     }
 
     /** Moves on to the next image; it then stays until tomorrow. */
+    /**
+     * Downloads the next few images while the box is idle, so the screensaver
+     * has a slideshow and "next artwork" is instant. Best effort, never throws.
+     */
+    suspend fun prefetch(context: Context) = mutex.withLock {
+        withContext(Dispatchers.IO) {
+            val prefs = Prefs.get(context)
+            val list = catalogue(context, ImageSource.of(prefs.imageSource))
+            if (list.isEmpty()) return@withContext
+            val today = Math.floorMod(LocalDate.now().toEpochDay() + prefs.artworkOffset, list.size.toLong()).toInt()
+            for (step in 1..minOf(PREFETCH_AHEAD, list.size - 1)) {
+                val artwork = list[(today + step) % list.size]
+                val file = imageFile(context, artwork)
+                if (!file.isFile) download(artwork.imageUrl, file)
+            }
+            Artwork.fromJson(prefs.artworkCurrent)?.let { prune(context, keep = imageFile(context, it)) }
+        }
+    }
+
+    /**
+     * Every image on disk with its label, current one first, for the screensaver.
+     * Labels come from the cached catalogues; an image no catalogue lists anymore
+     * is still shown, just without a label.
+     */
+    suspend fun slideshow(context: Context): List<DisplayedArtwork> = withContext(Dispatchers.IO) {
+        val byFile = ImageSource.entries
+            .filter { it != ImageSource.MIX }
+            .flatMap { readCatalogue(catalogueFile(context, it)) }
+            .associateBy { imageFile(context, it).name }
+        val current = cached(context)
+        val files = dir(context).listFiles { f -> f.name.endsWith(".jpg") && f.length() > 0 }.orEmpty()
+        val others = files
+            .filter { it != current?.file }
+            .map { file ->
+                DisplayedArtwork(byFile[file.name] ?: Artwork(file.nameWithoutExtension, "", "", ""), file)
+            }
+            .shuffled()
+        listOfNotNull(current) + others
+    }
+
     suspend fun next(context: Context): DisplayedArtwork? {
         Prefs.get(context).artworkOffset += 1
         return today(context)

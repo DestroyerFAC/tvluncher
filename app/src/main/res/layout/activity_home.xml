@@ -438,6 +438,26 @@
         </LinearLayout>
     </FrameLayout>
 
+    <!-- Shown while a dock tile is being moved. -->
+    <TextView
+        android:id="@+id/moveHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/bg_glass_control"
+        android:paddingStart="18dp"
+        android:paddingEnd="18dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:text="@string/move_hint"
+        android:textColor="@color/text_primary"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/rowContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <TextView
         android:id="@+id/hiddenHint"
         android:layout_width="wrap_content"

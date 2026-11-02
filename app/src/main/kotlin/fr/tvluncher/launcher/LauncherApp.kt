@@ -5,6 +5,7 @@ import android.content.ComponentCallbacks2
 import fr.tvluncher.launcher.data.AppRepository
 import fr.tvluncher.launcher.data.IconLoader
 import fr.tvluncher.launcher.ui.HomeActivity
+import fr.tvluncher.launcher.ui.ProfilePrompt
 import fr.tvluncher.launcher.util.CrashGuard
 
 class LauncherApp : Application() {
@@ -16,6 +17,7 @@ class LauncherApp : Application() {
         // query costs tens of milliseconds; doing it here means the first frame of
         // the launcher already has a populated row instead of an empty one.
         AppRepository.get(this).refresh()
+        ProfilePrompt.install(this)
     }
 
     override fun onTrimMemory(level: Int) {

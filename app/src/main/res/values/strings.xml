@@ -146,4 +146,11 @@
     <string name="ok">OK</string>
     <string name="pill_profile">Profil</string>
     <string name="home_all_apps">Toutes les applications</string>
+    <string name="action_move">Déplacer</string>
+    <string name="move_hint">◀ ▶ pour déplacer · OK pour valider</string>
+    <string name="settings_ask_profile">« Qui regarde ? » au démarrage</string>
+    <string name="settings_ask_profile_summary">Choisir le profil quand le Player s\'allume ou sort de veille (avec au moins deux profils).</string>
+    <string name="forecast_title">Météo · %1$s</string>
+    <string name="forecast_today">Aujourd\'hui</string>
+    <string name="forecast_unavailable">Prévisions indisponibles pour le moment.</string>
 </resources>

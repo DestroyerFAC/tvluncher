@@ -82,6 +82,9 @@ class HomeActivity : AppCompatActivity() {
     /** Dock tile to return to when leaving the grid. */
     private var lastDockPosition = 0
 
+    /** Id of the dock app being moved with left/right, or null. */
+    private var movingId: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
@@ -319,11 +322,15 @@ class HomeActivity : AppCompatActivity() {
         }
         binding.pillWeather.setUp(R.drawable.ic_weather_partly_cloudy, R.string.pill_weather) {
             if (!prefs.hasWeatherLocation) {
-                // Nothing to toggle until a city is chosen, which needs the keyboard.
+                // No forecast without a city, and choosing one needs the keyboard.
                 startActivity(Intent(this, SettingsActivity::class.java))
             } else {
-                prefs.weatherEnabled = !prefs.weatherEnabled
-                statusPill?.refreshWeather()
+                // Asking for the forecast implies wanting the weather shown.
+                if (!prefs.weatherEnabled) {
+                    prefs.weatherEnabled = true
+                    statusPill?.refreshWeather()
+                }
+                ForecastSheet.show(this)
             }
         }
         binding.pillProfile.setUp(R.drawable.ic_person, R.string.pill_profile) {
@@ -426,6 +433,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        if (movingId != null && handleMoveKey(event)) return true
         // While only the painting shows, the first key press brings the UI back
         // and is not passed on, so it cannot also launch whatever had focus.
         if (uiHidden && event.action == KeyEvent.ACTION_DOWN &&
@@ -470,7 +478,10 @@ class HomeActivity : AppCompatActivity() {
 
         adapter.favourites = favouriteApps.map { it.id }.toSet()
         adapter.submitList(favouriteApps) {
-            if (binding.favouritesRow.findFocus() == null && currentFocus == null) {
+            val moving = movingId
+            if (moving != null) {
+                keepInView(moving)
+            } else if (binding.favouritesRow.findFocus() == null && currentFocus == null) {
                 focusFirstTile()
             }
         }
@@ -537,14 +548,9 @@ class HomeActivity : AppCompatActivity() {
             add(Sheet.Item(getString(R.string.action_open), R.drawable.ic_open) {
                 Launch.app(this@HomeActivity, app)
             })
-            if (index > 0) {
-                add(Sheet.Item(getString(R.string.action_move_left), R.drawable.ic_chevron_left) {
-                    prefs.moveFavourite(app.id, -1)
-                })
-            }
-            if (index in 0 until favouriteApps.lastIndex) {
-                add(Sheet.Item(getString(R.string.action_move_right), R.drawable.ic_chevron_right) {
-                    prefs.moveFavourite(app.id, 1)
+            if (favouriteApps.size > 1 && index >= 0) {
+                add(Sheet.Item(getString(R.string.action_move), R.drawable.ic_chevron_right) {
+                    startMove(app)
                 })
             }
             add(Sheet.Item(getString(R.string.action_remove_favourite), R.drawable.ic_star_border) {
@@ -555,6 +561,47 @@ class HomeActivity : AppCompatActivity() {
             })
         }
         Sheet.show(this, app.label, app.packageName, items)
+    }
+
+    /**
+     * Move mode: the tile keeps focus and each left/right swaps it with its
+     * neighbour. ListAdapter reports the swap as a move, so the same view holder
+     * (and therefore focus) travels with the app; nothing else is re-bound.
+     */
+    private fun startMove(app: AppInfo) {
+        movingId = app.id
+        binding.moveHint.visibility = View.VISIBLE
+        binding.favouritesRow.post {
+            val position = favouriteApps.indexOfFirst { it.id == app.id }
+            binding.favouritesRow.findViewHolderForAdapterPosition(position)?.itemView?.requestFocus()
+        }
+    }
+
+    /** Focus does not change while moving, so the row has to be asked to follow. */
+    private fun keepInView(id: String) {
+        val row = binding.favouritesRow
+        val position = favouriteApps.indexOfFirst { it.id == id }
+        val child = row.findViewHolderForAdapterPosition(position)?.itemView ?: return
+        row.layoutManager?.requestChildRectangleOnScreen(row, child, android.graphics.Rect(), false)
+        if (!child.isFocused) child.requestFocus()
+    }
+
+    private fun endMove() {
+        movingId = null
+        binding.moveHint.visibility = View.GONE
+    }
+
+    /** Handles keys while moving; true when the key was used. */
+    private fun handleMoveKey(event: KeyEvent): Boolean {
+        val id = movingId ?: return false
+        if (event.action != KeyEvent.ACTION_DOWN) return true
+        when (event.keyCode) {
+            KeyEvent.KEYCODE_DPAD_LEFT -> prefs.moveFavourite(id, -1)
+            KeyEvent.KEYCODE_DPAD_RIGHT -> prefs.moveFavourite(id, 1)
+            // Anything else confirms: OK, Back, up, down, menu.
+            else -> endMove()
+        }
+        return true
     }
 
     private fun focusFirstTile() {
@@ -597,6 +644,8 @@ class HomeActivity : AppCompatActivity() {
             if (fresh != null && fresh.artwork.key != shownArtworkId) {
                 showArtwork(fresh, width, height)
             }
+            // Builds up the screensaver slideshow and makes "next" instant.
+            Artworks.prefetch(this@HomeActivity)
         }
     }
 
@@ -645,8 +694,13 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        // One sheet at a time: the update can wait for the next return home.
-        if (!maybePromptHomeButton()) maybeOfferUpdate()
+        if (ProfilePrompt.consume(this)) {
+            // Prompts wait: they will show when the picker returns here.
+            startActivity(Intent(this, ProfilesActivity::class.java))
+        } else if (!maybePromptHomeButton()) {
+            // One sheet at a time: the update can wait for the next return home.
+            maybeOfferUpdate()
+        }
         loadWallpaper()
         statusPill?.start()
         // Catches installs that happened while the launcher was in the background,
@@ -667,6 +721,7 @@ class HomeActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         if (uiHidden) setUiHidden(false)
+        if (movingId != null) endMove()
         if (gridMode) setGridMode(false)
         binding.homeGrid.scrollToPosition(0)
         binding.favouritesRow.stopScroll()

@@ -80,6 +80,11 @@ class Prefs private constructor(private val context: Context) {
     fun setHiddenFor(profileId: String, value: Set<String>) =
         sp.edit { putStringSet(scoped(KEY_HIDDEN, profileId), value) }
 
+    /** Show "Who's watching?" at boot and on waking from standby. */
+    var askProfileOnWake: Boolean
+        get() = sp.getBoolean(KEY_ASK_PROFILE, true)
+        set(value) = sp.edit { putBoolean(KEY_ASK_PROFILE, value) }
+
     /** Set once the current profile's dock has had its streaming apps put first. */
     var dockStreamingDone: Boolean
         get() = sp.getBoolean(scoped(KEY_DOCK_STREAMING, currentProfileId), false)
@@ -251,6 +256,7 @@ class Prefs private constructor(private val context: Context) {
         private const val SEPARATOR = "|"
 
         private const val KEY_PROFILES = "profiles"
+        private const val KEY_ASK_PROFILE = "ask_profile_on_wake"
         private const val KEY_CURRENT_PROFILE = "current_profile"
         private const val KEY_FAVOURITES = "favourites"
         private const val KEY_HIDDEN = "hidden"

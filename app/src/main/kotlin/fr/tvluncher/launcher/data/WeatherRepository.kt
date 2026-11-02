@@ -62,6 +62,20 @@ data class WeatherState(
     }
 }
 
+/** One day of the forecast sheet. */
+data class DayForecast(
+    val date: java.time.LocalDate,
+    val wmoCode: Int,
+    val maxCelsius: Int,
+    val minCelsius: Int,
+) {
+    @get:DrawableRes
+    val iconRes: Int get() = WeatherState.iconFor(wmoCode, isDay = true)
+
+    @get:StringRes
+    val labelRes: Int get() = WeatherState.labelFor(wmoCode)
+}
+
 data class GeoResult(
     val name: String,
     val admin: String,
@@ -86,6 +100,7 @@ object WeatherRepository {
     private const val TAG = "Weather"
     private const val REFRESH_INTERVAL_MS = 30 * 60 * 1000L
     private const val TIMEOUT_MS = 6_000
+    private const val FORECAST_DAYS = 5
 
     /** Returns the cached reading immediately if it is fresh, otherwise refetches. */
     suspend fun current(context: Context, force: Boolean = false): WeatherState? {
@@ -125,6 +140,38 @@ object WeatherRepository {
                 null
             }
         }
+
+    /**
+     * Five days for the forecast sheet. Fetched on demand only (the user opened
+     * it), so it is not cached; null when offline or not configured.
+     */
+    suspend fun forecast(context: Context): List<DayForecast>? = withContext(Dispatchers.IO) {
+        val prefs = Prefs.get(context)
+        if (!prefs.hasWeatherLocation) return@withContext null
+        val url = "https://api.open-meteo.com/v1/forecast" +
+            "?latitude=${prefs.weatherLatitude}&longitude=${prefs.weatherLongitude}" +
+            "&daily=weather_code,temperature_2m_max,temperature_2m_min" +
+            "&forecast_days=$FORECAST_DAYS&timezone=auto"
+        val body = get(url) ?: return@withContext null
+        runCatching {
+            val daily = JSONObject(body).getJSONObject("daily")
+            val days = daily.getJSONArray("time")
+            val codes = daily.getJSONArray("weather_code")
+            val max = daily.getJSONArray("temperature_2m_max")
+            val min = daily.getJSONArray("temperature_2m_min")
+            (0 until days.length()).map { i ->
+                DayForecast(
+                    date = java.time.LocalDate.parse(days.getString(i)),
+                    wmoCode = codes.optInt(i, 3),
+                    maxCelsius = Math.round(max.getDouble(i)).toInt(),
+                    minCelsius = Math.round(min.getDouble(i)).toInt(),
+                )
+            }
+        }.getOrElse {
+            Log.w(TAG, "Unexpected daily payload", it)
+            null
+        }
+    }
 
     /** City search for the settings screen. */
     suspend fun search(query: String): List<GeoResult> = withContext(Dispatchers.IO) {

@@ -29,7 +29,12 @@ Aucune publicité, aucun bandeau sponsorisé, aucune analyse, aucun traceur.
   d'origine.
 - **Bandeau heure / date / météo** optionnel, façon Apple TV.
 - **Fonds d'écran vectoriels** intégrés (ou votre propre image).
-- **Écran de veille** ambiant : le fond d'écran qui dérive lentement, avec l'heure.
+- **Écran de veille galerie** : diaporama des tableaux et photos déjà téléchargés,
+  fondu enchaîné toutes les 90 s, léger mouvement, heure et cartel.
+- **« Qui regarde ? » au démarrage** et à la sortie de veille (avec au moins deux
+  profils ; désactivable dans les réglages).
+- **Mode déplacement** dans le dock : appui long → Déplacer, puis ◀ ▶.
+- **Météo sur 5 jours** depuis la pastille Météo.
 - **Gestion des applications** : favoris, masquage, infos système, désinstallation.
 
 ## Installation
