@@ -32,6 +32,7 @@ import fr.tvluncher.launcher.data.Wallpapers
 import fr.tvluncher.launcher.databinding.ActivityHomeBinding
 import fr.tvluncher.launcher.databinding.ViewQuickPillBinding
 import fr.tvluncher.launcher.util.CrashGuard
+import fr.tvluncher.launcher.util.Accent
 import fr.tvluncher.launcher.util.Launch
 import fr.tvluncher.launcher.util.Volume
 import fr.tvluncher.launcher.update.UpdatePrompt
@@ -84,6 +85,10 @@ class HomeActivity : AppCompatActivity() {
 
     /** Id of the dock app being moved with left/right, or null. */
     private var movingId: String? = null
+
+    /** Tint of the glass surfaces, taken from the background; null until known. */
+    private var accent: Int? = null
+    private var accentAnimator: android.animation.ValueAnimator? = null
 
     /** The quick panel shows its controls only while focus is inside it. */
     private var panelExpanded = false
@@ -218,7 +223,7 @@ class HomeActivity : AppCompatActivity() {
             .forEach { slide(it, shelfY, animate) }
         slide(binding.homeGrid, if (on) top else gridRestY, animate)
 
-        val dim = if (on) GRID_DIM else 0f
+        val dim = if (on) GRID_DIM else baseDim()
         binding.dimLayer.animate().cancel()
         if (animate) {
             binding.dimLayer.animate().alpha(dim).setDuration(SLIDE_MS).start()
@@ -295,10 +300,14 @@ class HomeActivity : AppCompatActivity() {
             weatherIcon = binding.weatherIcon,
             weatherTemp = binding.weatherTemp,
             scope = lifecycleScope,
+            onTick = ::applyNight,
         )
     }
 
     private fun setUpButtons() {
+        binding.btnSearch.setOnClickListener {
+            startActivity(Intent(this, SearchActivity::class.java))
+        }
         binding.btnAllApps.setOnClickListener {
             startActivity(Intent(this, AllAppsActivity::class.java))
         }
@@ -679,14 +688,14 @@ class HomeActivity : AppCompatActivity() {
             if (!prefs.galleryStyle) {
                 shownArtworkId = null
                 binding.artCredit.visibility = View.GONE
-                binding.wallpaper.setImageDrawable(Wallpapers.load(this@HomeActivity, width, height))
+                setWallpaper(Wallpapers.load(this@HomeActivity, width, height))
                 return@launch
             }
 
             if (shownArtworkId == null) {
                 val cached = Artworks.cached(this@HomeActivity)
                 if (cached == null || !showArtwork(cached, width, height)) {
-                    binding.wallpaper.setImageDrawable(Wallpapers.load(this@HomeActivity, width, height))
+                    setWallpaper(Wallpapers.load(this@HomeActivity, width, height))
                 }
             }
 
@@ -699,11 +708,66 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    private suspend fun setWallpaper(drawable: android.graphics.drawable.Drawable?) {
+        binding.wallpaper.setImageDrawable(drawable)
+        val night = isNight()
+        val color = withContext(Dispatchers.Default) { Accent.from(drawable, night) } ?: return
+        animateAccent(color)
+    }
+
+    /** Fades the glass surfaces to [to], so a new picture does not snap the UI. */
+    private fun animateAccent(to: Int) {
+        val from = accent ?: to
+        accent = to
+        accentAnimator?.cancel()
+        accentAnimator = android.animation.ValueAnimator.ofArgb(from, to).apply {
+            duration = ACCENT_FADE_MS
+            addUpdateListener { tintGlass(it.animatedValue as Int) }
+            start()
+        }
+    }
+
+    private fun tintGlass(color: Int) {
+        (binding.rowContainer.background.mutate() as? android.graphics.drawable.GradientDrawable)
+            ?.setColor(Accent.withAlpha(color, DOCK_ALPHA))
+        // Focused controls stay white; resting ones take the tint.
+        val tint = android.content.res.ColorStateList(
+            arrayOf(intArrayOf(android.R.attr.state_focused), intArrayOf()),
+            intArrayOf(android.graphics.Color.WHITE, Accent.withAlpha(color, CONTROL_ALPHA)),
+        )
+        listOf(
+            binding.btnSearch, binding.btnAllApps, binding.btnSettings,
+            binding.pillStyle.root, binding.pillClock.root, binding.pillWeather.root, binding.pillProfile.root,
+            binding.btnNextArt, binding.btnScreensaver, binding.btnRefresh, binding.btnHideUi,
+            binding.volumePill, binding.moveHint,
+        ).forEach { it.backgroundTintList = tint }
+    }
+
+    private fun isNight(): Boolean {
+        if (!prefs.nightMode) return false
+        val hour = java.time.LocalTime.now().hour
+        return hour >= NIGHT_FROM || hour < NIGHT_UNTIL
+    }
+
+    /** How much the background is dimmed at rest: a little at night, not at all by day. */
+    private fun baseDim(): Float = if (isNight()) NIGHT_DIM else 0f
+
+    /** Applies or lifts night dimming; called on start and on every minute tick. */
+    private fun applyNight() {
+        if (!gridMode) {
+            binding.dimLayer.animate().cancel()
+            binding.dimLayer.animate().alpha(baseDim()).setDuration(ACCENT_FADE_MS).start()
+        }
+        val alpha = if (isNight()) NIGHT_UI_ALPHA else 1f
+        listOf(binding.clockBlock, binding.quickPanel, binding.rowContainer, binding.artCredit, binding.homeGrid)
+            .forEach { it.alpha = alpha }
+    }
+
     private suspend fun showArtwork(displayed: DisplayedArtwork, width: Int, height: Int): Boolean {
         val bitmap = withContext(Dispatchers.IO) {
             Wallpapers.decodeSampled(displayed.file.absolutePath, width, height)
         } ?: return false
-        binding.wallpaper.setImageDrawable(BitmapDrawable(resources, bitmap))
+        setWallpaper(BitmapDrawable(resources, bitmap))
         shownArtworkId = displayed.artwork.key
         binding.artTitle.text = displayed.artwork.title
         binding.artArtist.text = displayed.artwork.credit
@@ -744,6 +808,7 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        applyNight()
         if (ProfilePrompt.consume(this)) {
             // Prompts wait: they will show when the picker returns here.
             startActivity(Intent(this, ProfilesActivity::class.java))
@@ -780,6 +845,11 @@ class HomeActivity : AppCompatActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        // Remotes with a search or microphone-less search key open app search.
+        if (keyCode == KeyEvent.KEYCODE_SEARCH) {
+            startActivity(Intent(this, SearchActivity::class.java))
+            return true
+        }
         // Many TV remotes have a dedicated menu key; treat it as a long press on
         // whatever tile is focused.
         if (keyCode == KeyEvent.KEYCODE_MENU) {
@@ -809,6 +879,13 @@ class HomeActivity : AppCompatActivity() {
         /** The "All apps" title occupies adapter position 0 of the grid. */
         private const val GRID_HEADER = 1
         private const val GRID_DIM = 0.6f
+        private const val NIGHT_DIM = 0.35f
+        private const val NIGHT_UI_ALPHA = 0.8f
+        private const val NIGHT_FROM = 21
+        private const val NIGHT_UNTIL = 7
+        private const val ACCENT_FADE_MS = 600L
+        private const val DOCK_ALPHA = 0x66
+        private const val CONTROL_ALPHA = 0x80
         private const val SLIDE_MS = 320L
         private val SLIDE_INTERPOLATOR = DecelerateInterpolator(2f)
 

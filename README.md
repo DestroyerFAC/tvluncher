@@ -35,6 +35,11 @@ Aucune publicité, aucun bandeau sponsorisé, aucune analyse, aucun traceur.
   profils ; désactivable dans les réglages).
 - **Mode déplacement** dans le dock : appui long → Déplacer, puis ◀ ▶.
 - **Météo sur 5 jours** depuis la pastille Météo.
+- **Recherche instantanée** (bouton loupe ou touche Recherche) : clavier sur une
+  ligne, résultats dès la première lettre, sans tenir compte des accents.
+- **Couleurs assorties** : le dock et le panneau prennent une teinte tirée de
+  l'image de fond.
+- **Mode nuit** (21 h – 7 h) : fond et interface assombris ; désactivable.
 - **Gestion des applications** : favoris, masquage, infos système, désinstallation.
 
 ## Installation

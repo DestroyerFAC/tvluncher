@@ -86,6 +86,14 @@
             android:theme="@style/Theme.TvLuncher.Overlay" />
 
         <activity
+            android:name=".ui.SearchActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout|smallestScreenSize|uiMode|density|fontScale|locale|layoutDirection"
+            android:theme="@style/Theme.TvLuncher.Overlay" />
+
+        <activity
             android:name=".ui.ProfilesActivity"
             android:exported="false"
             android:screenOrientation="landscape"

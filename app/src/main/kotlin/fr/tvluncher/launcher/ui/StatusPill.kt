@@ -29,12 +29,17 @@ class StatusPill(
     private val weatherIcon: ImageView,
     private val weatherTemp: TextView,
     private val scope: CoroutineScope,
+    /** Called on every minute tick, for anything else that follows the clock. */
+    private val onTick: () -> Unit = {},
 ) {
     private val context: Context = clockView.context
     private val prefs = Prefs.get(context)
 
     private val timeReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) = renderTime()
+        override fun onReceive(context: Context, intent: Intent) {
+            renderTime()
+            onTick()
+        }
     }
 
     private var registered = false

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg_profiles"
+    android:paddingStart="@dimen/screen_margin_horizontal"
+    android:paddingEnd="@dimen/screen_margin_horizontal"
+    android:paddingTop="@dimen/screen_margin_vertical"
+    android:clipChildren="false">
+
+    <!-- Query line -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/bg_list_item"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/ic_search"
+            android:alpha="0.8"
+            android:importantForAccessibility="no" />
+
+        <TextView
+            android:id="@+id/query"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="14dp"
+            android:maxLines="1"
+            android:ellipsize="start"
+            android:hint="@string/search_hint"
+            android:textColorHint="@color/text_tertiary"
+            android:textColor="@color/text_primary"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- tvOS-style single-line keyboard: left/right to pick, OK to type. -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/keyboard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:scrollbars="none" />
+
+    <TextView
+        android:id="@+id/resultsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:paddingStart="8dp"
+        android:textColor="@color/text_primary"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/results"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="8dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingTop="10dp"
+        android:paddingBottom="24dp"
+        android:scrollbars="none" />
+
+    <TextView
+        android:id="@+id/empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="48dp"
+        android:paddingStart="8dp"
+        android:text="@string/search_empty"
+        android:textColor="@color/text_secondary"
+        android:textSize="15sp"
+        android:visibility="gone" />
+</LinearLayout>

@@ -148,4 +148,13 @@
     <string name="forecast_unavailable">Forecast unavailable right now.</string>
     <string name="settings_auto_hide">Fade the interface when idle</string>
     <string name="settings_auto_hide_summary">After a minute without touching the remote, only the background stays on screen.</string>
+    <string name="search">Search</string>
+    <string name="search_hint">Search for an app</string>
+    <string name="search_results">Results</string>
+    <string name="search_suggestions">All apps</string>
+    <string name="search_empty">No app matches.</string>
+    <string name="key_space">Space</string>
+    <string name="key_delete">Delete</string>
+    <string name="settings_night">Night mode</string>
+    <string name="settings_night_summary">From 9 pm to 7 am, the background and interface dim so they do not dazzle.</string>
 </resources>

@@ -134,6 +134,18 @@
             android:gravity="end">
 
             <ImageButton
+                android:id="@+id/btnSearch"
+                android:layout_width="@dimen/control_small"
+                android:layout_height="@dimen/control_small"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_glass_control"
+                android:src="@drawable/ic_search"
+                android:scaleType="centerInside"
+                android:padding="8dp"
+                android:contentDescription="@string/search"
+                app:tint="@color/glass_content" />
+
+            <ImageButton
                 android:id="@+id/btnAllApps"
                 android:layout_width="@dimen/control_small"
                 android:layout_height="@dimen/control_small"

@@ -145,6 +145,14 @@ class SettingsActivity : AppCompatActivity() {
             add(SettingRow.Header(getString(R.string.settings_section_home)))
             add(
                 SettingRow.Toggle(
+                    title = getString(R.string.settings_night),
+                    summary = getString(R.string.settings_night_summary),
+                    checked = prefs.nightMode,
+                    icon = R.drawable.ic_weather_moon,
+                ) { prefs.nightMode = it; rebuild() }
+            )
+            add(
+                SettingRow.Toggle(
                     title = getString(R.string.settings_auto_hide),
                     summary = getString(R.string.settings_auto_hide_summary),
                     checked = prefs.autoHideUi,

@@ -155,4 +155,13 @@
     <string name="forecast_unavailable">Prévisions indisponibles pour le moment.</string>
     <string name="settings_auto_hide">Effacer l\'interface au repos</string>
     <string name="settings_auto_hide_summary">Au bout d\'une minute sans toucher la télécommande, seul le fond reste affiché.</string>
+    <string name="search">Rechercher</string>
+    <string name="search_hint">Rechercher une application</string>
+    <string name="search_results">Résultats</string>
+    <string name="search_suggestions">Toutes les applications</string>
+    <string name="search_empty">Aucune application ne correspond.</string>
+    <string name="key_space">Espace</string>
+    <string name="key_delete">Effacer</string>
+    <string name="settings_night">Mode nuit</string>
+    <string name="settings_night_summary">De 21 h à 7 h, le fond et l\'interface s\'assombrissent pour ne pas éblouir.</string>
 </resources>
